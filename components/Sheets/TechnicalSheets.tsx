@@ -1,19 +1,23 @@
 
 import React from 'react';
-import { ALGORITHMS } from '../../data/algorithms';
-import { 
-  Clock, 
-  Database, 
-  CheckCircle2, 
-  XCircle, 
+import { ALGORITHMS, ALGORITHMS_FR } from '../../data/algorithms';
+import {
+  Clock,
+  Database,
+  CheckCircle2,
+  XCircle,
   Target,
   ArrowRight,
   Search
 } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const TechnicalSheets: React.FC = () => {
+  const { t, language } = useLanguage();
   const [selectedAlgoId, setSelectedAlgoId] = React.useState(ALGORITHMS[0].id);
-  const selectedAlgo = ALGORITHMS.find(a => a.id === selectedAlgoId)!;
+
+  const algorithms = language === 'en' ? ALGORITHMS : ALGORITHMS_FR;
+  const selectedAlgo = algorithms.find(a => a.id === selectedAlgoId) || algorithms[0];
 
   return (
     <div className="max-w-6xl mx-auto flex flex-col gap-8">
@@ -21,14 +25,14 @@ const TechnicalSheets: React.FC = () => {
       <div className="flex flex-col md:flex-row items-center gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
-          <input 
-            type="text" 
-            placeholder="Search algorithms..." 
+          <input
+            type="text"
+            placeholder={t.sheets.searchPlaceholder}
             className="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 pl-12 pr-6 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-xl"
           />
         </div>
         <div className="flex gap-2 overflow-x-auto pb-2 w-full md:w-auto">
-          {ALGORITHMS.map((algo) => (
+          {algorithms.map((algo) => (
             <button
               key={algo.id}
               onClick={() => setSelectedAlgoId(algo.id)}
@@ -49,7 +53,7 @@ const TechnicalSheets: React.FC = () => {
           <section className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
             <div className="flex items-center gap-3 text-indigo-400 font-bold tracking-widest text-xs uppercase mb-4">
               <span className="w-8 h-0.5 bg-indigo-500" />
-              {selectedAlgo.category}
+              {t.categories[selectedAlgo.category === 'Dynamic Programming' ? 'dynamicProgramming' : selectedAlgo.category.toLowerCase() as keyof typeof t.categories]}
             </div>
             <h1 className="text-4xl font-black mb-6 tracking-tight">{selectedAlgo.name}</h1>
             <p className="text-slate-400 text-lg leading-relaxed mb-8">
@@ -59,7 +63,7 @@ const TechnicalSheets: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
                 <h4 className="flex items-center gap-2 font-bold mb-4 text-emerald-400">
-                  <CheckCircle2 size={18} /> Advantages
+                  <CheckCircle2 size={18} /> {t.sheets.advantages}
                 </h4>
                 <ul className="space-y-3">
                   {selectedAlgo.advantages.map((adv, i) => (
@@ -72,7 +76,7 @@ const TechnicalSheets: React.FC = () => {
               </div>
               <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
                 <h4 className="flex items-center gap-2 font-bold mb-4 text-rose-400">
-                  <XCircle size={18} /> Disadvantages
+                  <XCircle size={18} /> {t.sheets.disadvantages}
                 </h4>
                 <ul className="space-y-3">
                   {selectedAlgo.disadvantages.map((dis, i) => (
@@ -88,7 +92,7 @@ const TechnicalSheets: React.FC = () => {
 
           <section className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <Target size={20} className="text-indigo-400" /> Recommendation & Cases
+              <Target size={20} className="text-indigo-400" /> {t.sheets.recommendation}
             </h3>
             <div className="flex flex-wrap gap-3">
               {selectedAlgo.useCases.map((use, i) => (
@@ -104,13 +108,13 @@ const TechnicalSheets: React.FC = () => {
         <div className="space-y-8">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
             <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
-              <Clock size={20} className="text-amber-400" /> Time Complexity
+              <Clock size={20} className="text-amber-400" /> {t.visualizer.timeComplexity}
             </h3>
             <div className="space-y-6">
               {[
-                { label: 'Best Case', val: selectedAlgo.timeComplexity.best, color: 'text-emerald-400' },
-                { label: 'Average Case', val: selectedAlgo.timeComplexity.average, color: 'text-amber-400' },
-                { label: 'Worst Case', val: selectedAlgo.timeComplexity.worst, color: 'text-rose-400' },
+                { label: t.sheets.bestCase, val: selectedAlgo.timeComplexity.best, color: 'text-emerald-400' },
+                { label: t.sheets.averageCase, val: selectedAlgo.timeComplexity.average, color: 'text-amber-400' },
+                { label: t.sheets.worstCase, val: selectedAlgo.timeComplexity.worst, color: 'text-rose-400' },
               ].map((c, i) => (
                 <div key={i} className="flex justify-between items-center group">
                   <span className="text-slate-500 font-medium">{c.label}</span>
@@ -124,10 +128,10 @@ const TechnicalSheets: React.FC = () => {
 
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
             <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
-              <Database size={20} className="text-blue-400" /> Space Complexity
+              <Database size={20} className="text-blue-400" /> {t.visualizer.spaceComplexity}
             </h3>
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-medium">Extra Space</span>
+              <span className="text-slate-500 font-medium">{t.sheets.extraSpace}</span>
               <span className="font-mono text-xl font-black text-blue-400">
                 {selectedAlgo.spaceComplexity}
               </span>
@@ -135,7 +139,7 @@ const TechnicalSheets: React.FC = () => {
           </div>
 
           <button className="w-full py-5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-3xl font-bold shadow-xl shadow-indigo-600/20 transition-all flex items-center justify-center gap-3 group">
-            Go to Visualization <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+            {t.sheets.goToViz} <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
           </button>
         </div>
       </div>

@@ -1,15 +1,18 @@
 
 import React from 'react';
-import { 
-  Activity, 
-  BookOpen, 
-  LayoutDashboard, 
-  BrainCircuit, 
-  Github, 
+import {
+  Activity,
+  BookOpen,
+  LayoutDashboard,
+  BrainCircuit,
+  Github,
   Settings,
   Menu,
-  X
+  X,
+  Languages
 } from 'lucide-react';
+
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -19,11 +22,12 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+  const { t, language, setLanguage } = useLanguage();
 
   const menuItems = [
-    { id: 'visualizer', label: 'Visualization', icon: Activity },
-    { id: 'sheets', label: 'Learn & Sheets', icon: BookOpen },
-    { id: 'quiz', label: 'Quiz & Practice', icon: BrainCircuit },
+    { id: 'visualizer', label: t.menu.visualizer, icon: Activity },
+    { id: 'sheets', label: t.menu.sheets, icon: BookOpen },
+    { id: 'quiz', label: t.menu.quiz, icon: BrainCircuit },
   ];
 
   return (
@@ -47,8 +51,8 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
               onClick={() => onTabChange(item.id as any)}
               className={`
                 w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all
-                ${activeTab === item.id 
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' 
+                ${activeTab === item.id
+                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
               `}
             >
@@ -61,14 +65,14 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
         <div className="p-4 border-t border-slate-800 space-y-2">
           <button className="w-full flex items-center gap-4 px-4 py-2 text-slate-400 hover:text-white transition-colors">
             <Settings size={20} />
-            {isSidebarOpen && <span>Settings</span>}
+            {isSidebarOpen && <span>{t.common.settings}</span>}
           </button>
-          <button 
+          <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="w-full flex items-center gap-4 px-4 py-2 text-slate-400 hover:text-white transition-colors"
           >
             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-            {isSidebarOpen && <span>Collapse</span>}
+            {isSidebarOpen && <span>{t.common.collapse}</span>}
           </button>
         </div>
       </aside>
@@ -85,6 +89,14 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
               <img className="w-8 h-8 rounded-full border-2 border-slate-900" src="https://picsum.photos/seed/user1/32/32" alt="Avatar" />
               <img className="w-8 h-8 rounded-full border-2 border-slate-900" src="https://picsum.photos/seed/user2/32/32" alt="Avatar" />
             </div>
+            <button
+              onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')}
+              className="text-slate-400 hover:text-white flex items-center gap-2 px-2 py-1 rounded hover:bg-slate-800 transition-colors"
+              title={language === 'en' ? 'Switch to French' : 'Passer en Anglais'}
+            >
+              <Languages size={20} />
+              <span className="text-sm font-bold">{language.toUpperCase()}</span>
+            </button>
             <a href="#" className="text-slate-400 hover:text-white"><Github size={20} /></a>
           </div>
         </header>
