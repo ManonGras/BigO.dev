@@ -3,9 +3,12 @@ import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { ALGORITHMS, ALGORITHMS_FR } from '../../data/algorithms';
 import { Timer, Maximize2, Layers } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
+
 
 const ComplexityOverview: React.FC = () => {
     const { language, t } = useLanguage();
+    const { currentPalette } = useTheme();
     const algos = language === 'en' ? ALGORITHMS : ALGORITHMS_FR;
 
     const getTimeColor = (complexity: string) => {
@@ -32,34 +35,39 @@ const ComplexityOverview: React.FC = () => {
                     <div className="bg-amber-500/10 p-2 rounded-lg">
                         <Timer className="text-amber-500" size={24} />
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-100">{t.complexity.timeTable}</h3>
+                    <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{t.complexity.timeTable}</h3>
                 </div>
 
-                <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+                <div
+                    className="backdrop-blur-xl border rounded-2xl overflow-hidden shadow-2xl"
+                    style={{ backgroundColor: `${currentPalette.colors.bgSecondary}88`, borderColor: 'var(--border)' }}
+                >
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-800/50 border-b border-slate-700">
-                                <th className="px-6 py-4 text-slate-300 font-semibold">{t.complexity.algorithm}</th>
-                                <th className="px-6 py-4 text-emerald-400 font-semibold">{t.sheets.bestCase}</th>
-                                <th className="px-6 py-4 text-amber-400 font-semibold">{t.sheets.averageCase}</th>
-                                <th className="px-6 py-4 text-rose-400 font-semibold">{t.sheets.worstCase}</th>
+                            <tr className="border-b" style={{ backgroundColor: `${currentPalette.colors.bgSecondary}cc`, borderColor: 'var(--border)' }}>
+                                <th className="px-6 py-4 font-semibold" style={{ color: 'var(--text-secondary)' }}>{t.complexity.algorithm}</th>
+                                <th className="px-6 py-4 font-semibold text-emerald-400">{t.sheets.bestCase}</th>
+                                <th className="px-6 py-4 font-semibold text-amber-400">{t.sheets.averageCase}</th>
+                                <th className="px-6 py-4 font-semibold text-rose-400">{t.sheets.worstCase}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {algos.map((algo, idx) => (
                                 <tr
                                     key={algo.id}
-                                    className={`
-                    group transition-colors border-b border-slate-800/50 hover:bg-slate-800/30
-                    ${idx % 2 === 0 ? 'bg-transparent' : 'bg-slate-800/10'}
-                  `}
+                                    className="group transition-colors border-b hover:opacity-80"
+                                    style={{
+                                        backgroundColor: idx % 2 === 0 ? 'transparent' : `${currentPalette.colors.bgSecondary}44`,
+                                        borderColor: `${currentPalette.colors.border}44`
+                                    }}
                                 >
                                     <td className="px-6 py-5">
                                         <div className="flex flex-col">
-                                            <span className="font-bold text-slate-100 group-hover:text-indigo-400 transition-colors uppercase tracking-wider text-sm">
+                                            <span className="font-bold uppercase tracking-wider text-sm transition-colors group-hover:text-indigo-400"
+                                                style={{ color: 'var(--text-primary)' }}>
                                                 {algo.name}
                                             </span>
-                                            <span className="text-xs text-slate-500 font-medium">{algo.category}</span>
+                                            <span className="text-xs font-medium opacity-60" style={{ color: 'var(--text-secondary)' }}>{algo.category}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-5 font-mono">
@@ -90,29 +98,34 @@ const ComplexityOverview: React.FC = () => {
                     <div className="bg-indigo-500/10 p-2 rounded-lg">
                         <Layers className="text-indigo-500" size={24} />
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-100">{t.complexity.spaceTable}</h3>
+                    <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{t.complexity.spaceTable}</h3>
                 </div>
 
-                <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-2xl overflow-hidden shadow-2xl overflow-x-auto">
+                <div
+                    className="backdrop-blur-xl border rounded-2xl overflow-hidden shadow-2xl overflow-x-auto"
+                    style={{ backgroundColor: `${currentPalette.colors.bgSecondary}88`, borderColor: 'var(--border)' }}
+                >
                     <table className="w-full text-left border-collapse min-w-[600px]">
                         <thead>
-                            <tr className="bg-slate-800/50 border-b border-slate-700">
-                                <th className="px-6 py-4 text-slate-300 font-semibold">{t.complexity.algorithm}</th>
-                                <th className="px-6 py-4 text-indigo-400 font-semibold">{t.sheets.extraSpace}</th>
-                                <th className="px-6 py-4 text-slate-400 font-semibold">{t.complexity.algorithm} {language === 'en' ? 'Category' : 'Catégorie'}</th>
+                            <tr className="border-b" style={{ backgroundColor: `${currentPalette.colors.bgSecondary}cc`, borderColor: 'var(--border)' }}>
+                                <th className="px-6 py-4 font-semibold" style={{ color: 'var(--text-secondary)' }}>{t.complexity.algorithm}</th>
+                                <th className="px-6 py-4 font-semibold" style={{ color: 'var(--accent)' }}>{t.sheets.extraSpace}</th>
+                                <th className="px-6 py-4 font-semibold opacity-60" style={{ color: 'var(--text-secondary)' }}>{t.complexity.algorithm} {language === 'en' ? 'Category' : 'Catégorie'}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {algos.map((algo, idx) => (
                                 <tr
                                     key={algo.id}
-                                    className={`
-                    group transition-colors border-b border-slate-800/50 hover:bg-slate-800/30
-                    ${idx % 2 === 0 ? 'bg-transparent' : 'bg-slate-800/10'}
-                  `}
+                                    className="group transition-colors border-b hover:opacity-80"
+                                    style={{
+                                        backgroundColor: idx % 2 === 0 ? 'transparent' : `${currentPalette.colors.bgSecondary}44`,
+                                        borderColor: `${currentPalette.colors.border}44`
+                                    }}
                                 >
                                     <td className="px-6 py-5">
-                                        <span className="font-bold text-slate-100 group-hover:text-indigo-400 transition-colors uppercase tracking-wider text-sm">
+                                        <span className="font-bold uppercase tracking-wider text-sm transition-colors group-hover:text-indigo-400"
+                                            style={{ color: 'var(--text-primary)' }}>
                                             {algo.name}
                                         </span>
                                     </td>
@@ -121,7 +134,7 @@ const ComplexityOverview: React.FC = () => {
                                             {algo.spaceComplexity}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-5 text-slate-400 text-sm italic font-medium">
+                                    <td className="px-6 py-5 text-sm italic font-medium opacity-60" style={{ color: 'var(--text-secondary)' }}>
                                         {algo.category}
                                     </td>
                                 </tr>

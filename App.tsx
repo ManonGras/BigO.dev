@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 import AlgorithmVisualizer from './components/Visualizer/AlgorithmVisualizer';
 import TechnicalSheets from './components/Sheets/TechnicalSheets';
@@ -29,11 +30,13 @@ const App: React.FC = () => {
 
   return (
     <LanguageProvider>
-      <Layout activeTab={activeTab} onTabChange={setActiveTab}>
-        <div className="h-full">
-          {renderContent()}
-        </div>
-      </Layout>
+      <ThemeProvider>
+        <Layout activeTab={activeTab} onTabChange={setActiveTab}>
+          <div className="h-full">
+            {renderContent()}
+          </div>
+        </Layout>
+      </ThemeProvider>
     </LanguageProvider>
   );
 };

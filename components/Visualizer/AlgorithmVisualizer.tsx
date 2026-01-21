@@ -7,6 +7,8 @@ import VisualizerControls from './VisualizerControls';
 import { BarChart2, Hash, Zap, Code2, Activity, Settings2 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Translations } from '../../locales/types';
+import { useTheme } from '../../contexts/ThemeContext';
+
 
 import {
   generateBubbleSortSteps,
@@ -151,6 +153,7 @@ const RecursiveTree: React.FC<{ node: TreeNode; parentX?: number; parentY?: numb
 
 const AlgorithmVisualizer: React.FC = () => {
   const { t, language } = useLanguage();
+  const { currentPalette } = useTheme();
   const [currentAlgoId, setCurrentAlgoId] = useState('bubble-sort');
   const [arraySize, setArraySize] = useState(12);
   const [customInput, setCustomInput] = useState('');
@@ -256,12 +259,13 @@ const AlgorithmVisualizer: React.FC = () => {
       {/* Left Pane: Visualizer & Controls */}
       <div className="lg:col-span-2 flex flex-col gap-6 overflow-hidden">
         {/* Viz Area */}
-        <div className="flex-1 bg-slate-900 border border-slate-800 rounded-3xl p-8 relative flex flex-col">
+        <div className="flex-1 border rounded-3xl p-8 relative flex flex-col shadow-2xl"
+          style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
           <div className="flex items-center justify-between mb-8">
             <div className="flex flex-col gap-4 w-full">
               {/* Category Tabs */}
-              <div className="flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto scrollbar-none">
-                <div className="p-1.5 bg-indigo-500/10 rounded-lg text-indigo-400 shrink-0">
+              <div className="flex items-center gap-2 border-b pb-2 overflow-x-auto scrollbar-none" style={{ borderColor: 'var(--border)' }}>
+                <div className="p-1.5 rounded-lg shrink-0" style={{ backgroundColor: `${currentPalette.colors.accent}15`, color: 'var(--accent)' }}>
                   <BarChart2 size={18} />
                 </div>
                 {(['Sorting', 'Searching', 'Trees', 'LinkedLists'] as const).map(cat => {
@@ -282,8 +286,13 @@ const AlgorithmVisualizer: React.FC = () => {
                       }}
                       className={`
                              px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap
-                             ${isActive ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
+                             ${isActive ? 'text-white shadow-lg' : 'hover:text-white'}
                            `}
+                      style={{
+                        backgroundColor: isActive ? 'var(--accent)' : 'transparent',
+                        color: isActive ? '#fff' : 'var(--text-secondary)',
+                        boxShadow: isActive ? `0 10px 15px -3px ${currentPalette.colors.accent}44` : 'none'
+                      }}
                     >
                       {t.categories[keyMap[cat]]}
                     </button>
@@ -421,13 +430,14 @@ const AlgorithmVisualizer: React.FC = () => {
             { label: t.visualizer.timeComplexity, val: currentAlgo.timeComplexity.average, icon: Activity, color: 'text-indigo-400' },
             { label: t.visualizer.spaceComplexity, val: currentAlgo.spaceComplexity, icon: Activity, color: 'text-slate-400' },
           ].map((stat, i) => (
-            <div key={i} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
-              <div className={`p-2 bg-slate-800 rounded-lg ${stat.color}`}>
+            <div key={i} className="border p-4 rounded-2xl flex items-center gap-4"
+              style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+              <div className={`p-2 rounded-lg ${stat.color}`} style={{ backgroundColor: 'rgba(0,0,0,0.2)' }}>
                 <stat.icon size={18} />
               </div>
               <div>
                 <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{stat.label}</p>
-                <p className="text-lg font-mono font-bold">{stat.val}</p>
+                <p className="text-lg font-mono font-bold" style={{ color: 'var(--text-primary)' }}>{stat.val}</p>
               </div>
             </div>
           ))}
@@ -437,10 +447,12 @@ const AlgorithmVisualizer: React.FC = () => {
       {/* Right Pane: Code & Variables */}
       <div className="flex flex-col gap-6 h-full">
         {/* Code Panel */}
-        <div className="flex-1 bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden flex flex-col shadow-2xl">
-          <div className="bg-slate-800/50 px-6 py-4 flex items-center gap-2 border-b border-slate-700">
-            <Code2 size={18} className="text-indigo-400" />
-            <h4 className="font-semibold">{t.visualizer.implementation}</h4>
+        <div className="flex-1 border rounded-3xl overflow-hidden flex flex-col shadow-2xl"
+          style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+          <div className="px-6 py-4 flex items-center gap-2 border-b"
+            style={{ backgroundColor: 'rgba(0,0,0,0.2)', borderColor: 'var(--border)' }}>
+            <Code2 size={18} style={{ color: 'var(--accent)' }} />
+            <h4 className="font-semibold" style={{ color: 'var(--text-primary)' }}>{t.visualizer.implementation}</h4>
           </div>
           <div className="flex-1 overflow-y-auto p-4 font-mono text-sm leading-relaxed">
             {currentAlgo.pseudoCode.map((line, idx) => (
@@ -448,10 +460,15 @@ const AlgorithmVisualizer: React.FC = () => {
                 key={idx}
                 className={`
                   px-4 py-1.5 rounded-lg transition-colors flex gap-4
-                  ${currentStep?.currentLine === idx ? 'bg-indigo-600/20 border-l-4 border-indigo-500 text-white' : 'text-slate-400'}
+                  ${currentStep?.currentLine === idx ? 'border-l-4 text-white' : ''}
                  `}
+                style={{
+                  backgroundColor: currentStep?.currentLine === idx ? `${currentPalette.colors.accent}33` : 'transparent',
+                  borderColor: currentStep?.currentLine === idx ? 'var(--accent)' : 'transparent',
+                  color: currentStep?.currentLine === idx ? 'var(--text-primary)' : 'var(--text-secondary)'
+                }}
               >
-                <span className="text-slate-600 text-xs w-4 select-none">{idx + 1}</span>
+                <span className="text-xs w-4 select-none opacity-40">{idx + 1}</span>
                 <pre className="whitespace-pre-wrap">{line}</pre>
               </div>
             ))}
@@ -459,28 +476,29 @@ const AlgorithmVisualizer: React.FC = () => {
         </div>
 
         {/* Variables State */}
-        <div className="h-64 bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl overflow-hidden">
-          <h4 className="font-semibold mb-4 text-slate-300 flex items-center gap-2">
+        <div className="h-64 border rounded-3xl p-6 shadow-2xl overflow-hidden"
+          style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+          <h4 className="font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
             <Settings2 size={16} /> {t.visualizer.memoryState}
           </h4>
           <div className="space-y-3 font-mono text-sm">
-            <div className="flex justify-between items-center py-2 border-b border-slate-800">
-              <span className="text-slate-500">{t.visualizer.size}</span>
-              <span className="text-indigo-400">{arraySize}</span>
+            <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>{t.visualizer.size}</span>
+              <span style={{ color: 'var(--accent)' }}>{arraySize}</span>
             </div>
-            <div className="flex justify-between items-center py-2 border-b border-slate-800">
-              <span className="text-slate-500">{t.visualizer.currentArray}</span>
-              <span className="text-xs text-slate-300">
+            <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>{t.visualizer.currentArray}</span>
+              <span className="text-xs" style={{ color: 'var(--text-primary)' }}>
                 {currentStep?.tree ? 'Tree Nodes...' : `[${currentStep?.array.slice(0, 5).join(', ')}...]`}
               </span>
             </div>
-            <div className="flex justify-between items-center py-2 border-b border-slate-800">
-              <span className="text-slate-500">comparisons</span>
-              <span className="text-amber-400 font-bold">{currentStep?.stats.comparisons}</span>
+            <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>comparisons</span>
+              <span className="font-bold" style={{ color: 'var(--accent)' }}>{currentStep?.stats.comparisons}</span>
             </div>
             <div className="flex justify-between items-center py-2">
-              <span className="text-slate-500">{t.visualizer.lastSwapped}</span>
-              <span className="text-emerald-400">{currentStep?.swapping.length > 0 ? 'True' : 'False'}</span>
+              <span style={{ color: 'var(--text-secondary)' }}>{t.visualizer.lastSwapped}</span>
+              <span style={{ color: 'var(--accent)' }}>{currentStep?.swapping.length > 0 ? 'True' : 'False'}</span>
             </div>
           </div>
         </div>
