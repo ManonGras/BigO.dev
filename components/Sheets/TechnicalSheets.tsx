@@ -163,18 +163,26 @@ const TechnicalSheets: React.FC = () => {
               <Clock size={20} className="text-amber-400" /> {t.visualizer.timeComplexity}
             </h3>
             <div className="space-y-6">
-              {[
-                { label: t.sheets.bestCase, val: selectedAlgo.timeComplexity.best, color: 'text-emerald-400' },
-                { label: t.sheets.averageCase, val: selectedAlgo.timeComplexity.average, color: 'text-amber-400' },
-                { label: t.sheets.worstCase, val: selectedAlgo.timeComplexity.worst, color: 'text-rose-400' },
-              ].map((c, i) => (
-                <div key={i} className="flex justify-between items-center group">
-                  <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>{c.label}</span>
-                  <span className={`font-mono text-xl font-black ${c.color} group-hover:scale-110 transition-transform`}>
-                    {c.val}
-                  </span>
-                </div>
-              ))}
+              {(() => {
+                const isExact = selectedAlgo.timeComplexity.best === selectedAlgo.timeComplexity.worst;
+                return [
+                  { label: t.sheets.bestCase, symbol: 'Ω', val: selectedAlgo.timeComplexity.best, color: 'text-emerald-400' },
+                  {
+                    label: isExact ? t.sheets.exactComplexity : t.sheets.averageCase,
+                    symbol: isExact ? 'Θ' : 'O',
+                    val: selectedAlgo.timeComplexity.average,
+                    color: 'text-amber-400'
+                  },
+                  { label: t.sheets.worstCase, symbol: 'O', val: selectedAlgo.timeComplexity.worst, color: 'text-rose-400' },
+                ].map((c, i) => (
+                  <div key={i} className="flex justify-between items-center group">
+                    <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>{c.label}</span>
+                    <span className={`font-mono text-xl font-black ${c.color} group-hover:scale-110 transition-transform`}>
+                      {c.val.replace(/^O/, c.symbol)}
+                    </span>
+                  </div>
+                ));
+              })()}
             </div>
           </div>
 

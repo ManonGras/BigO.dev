@@ -455,23 +455,26 @@ const AlgorithmVisualizer: React.FC = () => {
 
         {/* Stats Row */}
         <div className="grid grid-cols-4 gap-4">
-          {[
-            { label: t.visualizer.comparisons, val: currentStep?.stats.comparisons || 0, icon: Hash, color: 'text-amber-400' },
-            { label: t.visualizer.swaps, val: currentStep?.stats.swaps || 0, icon: Zap, color: 'text-emerald-400' },
-            { label: t.visualizer.timeComplexity, val: currentAlgo.timeComplexity.average, icon: Activity, color: 'text-indigo-400' },
-            { label: t.visualizer.spaceComplexity, val: currentAlgo.spaceComplexity, icon: Activity, color: 'text-slate-400' },
-          ].map((stat, i) => (
-            <div key={i} className="border p-4 rounded-2xl flex items-center gap-4"
-              style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
-              <div className={`p-2 rounded-lg ${stat.color}`} style={{ backgroundColor: 'rgba(0,0,0,0.2)' }}>
+          {(() => {
+            const isExact = currentAlgo.timeComplexity.best === currentAlgo.timeComplexity.worst;
+            const symbol = isExact ? 'Θ' : 'O';
+            const label = isExact ? t.sheets.exactComplexity : t.visualizer.timeComplexity;
+            return [
+              { label: t.visualizer.comparisons, val: currentStep?.stats.comparisons || 0, icon: Hash, color: 'text-amber-400' },
+              { label: t.visualizer.swaps, val: currentStep?.stats.swaps || 0, icon: Zap, color: 'text-emerald-400' },
+              { label: `${symbol} - ${label}`, val: currentAlgo.timeComplexity.average.replace(/^O/, symbol), icon: Activity, color: 'text-indigo-400' },
+              { label: t.visualizer.spaceComplexity, val: currentAlgo.spaceComplexity, icon: Activity, color: 'text-slate-400' },
+            ].map((stat, i) => (
+              <div key={i} className="border p-4 rounded-2xl flex items-center gap-4"
+                style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
                 <stat.icon size={18} />
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{stat.label}</p>
+                  <p className="text-lg font-mono font-bold" style={{ color: 'var(--text-primary)' }}>{stat.val}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{stat.label}</p>
-                <p className="text-lg font-mono font-bold" style={{ color: 'var(--text-primary)' }}>{stat.val}</p>
-              </div>
-            </div>
-          ))}
+            ));
+          })()}
         </div>
       </div>
 

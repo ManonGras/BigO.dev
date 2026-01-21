@@ -89,6 +89,7 @@ export const fr: Translations = {
         bestCase: 'Meilleur Cas',
         averageCase: 'Cas Moyen',
         worstCase: 'Pire Cas',
+        exactComplexity: 'Exacte',
         extraSpace: 'Espace Suppl.',
         goToViz: 'Aller à la visualisation',
         terminationProof: 'Preuve de Terminaison',
@@ -119,5 +120,10 @@ export const fr: Translations = {
         timeTable: 'Comparaison de la Complexité Temporelle',
         spaceTable: 'Comparaison de la Complexité Spatiale',
         algorithm: 'Algorithme',
+        notationsTitle: 'Notations de Complexité',
+        bigO: 'Grand O (O) - au plus',
+        bigTheta: 'Grand Theta (Θ) - ni plus ni moins',
+        bigOmega: 'Grand Omega (Ω) - au moins',
+        notationsDescription: "Le Grand O représente la borne supérieure (au plus), le Grand Omega la borne inférieure (au moins), et le Grand Theta la borne exacte (ni plus ni moins).",
     },
 };

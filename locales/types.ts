@@ -87,6 +87,7 @@ export interface Translations {
         bestCase: string;
         averageCase: string;
         worstCase: string;
+        exactComplexity: string;
         extraSpace: string;
         goToViz: string;
         terminationProof: string;
@@ -117,5 +118,10 @@ export interface Translations {
         timeTable: string;
         spaceTable: string;
         algorithm: string;
+        notationsTitle: string;
+        bigO: string;
+        bigTheta: string;
+        bigOmega: string;
+        notationsDescription: string;
     };
 }

@@ -89,6 +89,7 @@ export const en: Translations = {
         bestCase: 'Best Case',
         averageCase: 'Average Case',
         worstCase: 'Worst Case',
+        exactComplexity: 'Exact',
         extraSpace: 'Extra Space',
         goToViz: 'Go to Visualization',
         terminationProof: 'Termination Proof',
@@ -119,5 +120,10 @@ export const en: Translations = {
         timeTable: 'Time Complexity Comparison',
         spaceTable: 'Space Complexity Comparison',
         algorithm: 'Algorithm',
+        notationsTitle: 'Complexity Notations',
+        bigO: 'Big O (O) - at most',
+        bigTheta: 'Big Theta (Θ) - exactly',
+        bigOmega: 'Big Omega (Ω) - at least',
+        notationsDescription: 'Big O represents the upper bound (at most), Big Omega the lower bound (at least), and Big Theta the tight/exact bound (exactly).',
     },
 };

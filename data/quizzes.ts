@@ -97,6 +97,14 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['Recursive algorithms always use O(1) space', 'In-place algorithms use O(n) extra space', 'Merge Sort uses O(n) extra space', 'Binary Search uses O(n) space'],
     correctAnswer: 2,
     explanation: 'Merge Sort requires O(n) additional space to store the temporary arrays during the merge process.'
+  },
+  {
+    id: 'q13',
+    category: 'Complexity',
+    question: 'Which notation represents the tight bound of an algorithm\'s growth?',
+    options: ['Big O (O)', 'Big Omega (Ω)', 'Big Theta (Θ)', 'Big Delta (Δ)'],
+    correctAnswer: 2,
+    explanation: 'Big Theta (Θ) represents the tight bound, used when the best and worst cases have the same growth rate.'
   }
 ];
 
@@ -196,5 +204,13 @@ export const QUIZ_QUESTIONS_FR: QuizQuestion[] = [
     options: ['Les algorithmes récursifs utilisent toujours O(1) d\'espace', 'Les algorithmes en place utilisent O(n) d\'espace supplémentaire', 'Le Tri Fusion utilise O(n) d\'espace supplémentaire', 'La Recherche Binaire utilise O(n) d\'espace'],
     correctAnswer: 2,
     explanation: 'Le Tri Fusion nécessite O(n) d\'espace supplémentaire pour stocker les tableaux temporaires pendant le processus de fusion.'
+  },
+  {
+    id: 'q13',
+    category: 'Complexity',
+    question: 'Quelle notation représente la borne exacte (tight bound) de la croissance d\'un algorithme ?',
+    options: ['Grand O (O)', 'Grand Omega (Ω)', 'Grand Theta (Θ)', 'Grand Delta (Δ)'],
+    correctAnswer: 2,
+    explanation: 'Le Grand Theta (Θ) représente la borne exacte, utilisée lorsque le meilleur et le pire cas ont le même taux de croissance.'
   }
 ];
