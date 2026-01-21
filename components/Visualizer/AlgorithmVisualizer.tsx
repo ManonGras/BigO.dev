@@ -309,9 +309,14 @@ const AlgorithmVisualizer: React.FC = () => {
                     className={`
                            px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-all
                            ${currentAlgoId === algo.id
-                        ? 'bg-slate-800 border-indigo-500 text-indigo-400 shadow-sm'
-                        : 'bg-slate-800/50 border-transparent text-slate-500 hover:border-slate-700 hover:text-slate-300'}
+                        ? 'shadow-sm'
+                        : 'border-transparent hover:border-[var(--border)]'}
                         `}
+                    style={{
+                      backgroundColor: currentAlgoId === algo.id ? 'var(--bg-secondary)' : 'transparent',
+                      borderColor: currentAlgoId === algo.id ? 'var(--accent)' : 'transparent',
+                      color: currentAlgoId === algo.id ? 'var(--accent)' : 'var(--text-secondary)'
+                    }}
                   >
                     {algo.name}
                   </button>
@@ -325,7 +330,12 @@ const AlgorithmVisualizer: React.FC = () => {
                   <>
                     <button
                       onClick={() => setIsCustomMode(true)}
-                      className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/50 hover:bg-indigo-500/20 text-indigo-300 rounded-md text-xs font-bold flex items-center gap-2 transition-all"
+                      className="px-3 py-1 border rounded-md text-xs font-bold flex items-center gap-2 transition-all"
+                      style={{
+                        backgroundColor: `${currentPalette.colors.accent}15`,
+                        borderColor: `${currentPalette.colors.accent}50`,
+                        color: 'var(--accent)'
+                      }}
                     >
                       <Edit3 size={12} /> {t.visualizer.customArray}
                     </button>
@@ -334,18 +344,32 @@ const AlgorithmVisualizer: React.FC = () => {
                         const size = Math.max(5, arraySize - 1);
                         setArraySize(size);
                       }}
-                      className="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-md text-xs font-medium"
+                      className="px-3 py-1 rounded-md text-xs font-medium transition-all"
+                      style={{
+                        backgroundColor: 'var(--bg-primary)',
+                        color: 'var(--text-primary)',
+                        border: '1px solid var(--border)'
+                      }}
                     >{t.visualizer.decreaseSize}</button>
                     <button
                       onClick={() => {
                         const size = Math.min(30, arraySize + 1);
                         setArraySize(size);
                       }}
-                      className="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-md text-xs font-medium"
+                      className="px-3 py-1 rounded-md text-xs font-medium transition-all"
+                      style={{
+                        backgroundColor: 'var(--bg-primary)',
+                        color: 'var(--text-primary)',
+                        border: '1px solid var(--border)'
+                      }}
                     >{t.visualizer.increaseSize}</button>
                     <button
                       onClick={initArray}
-                      className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-md text-xs font-medium"
+                      className="px-3 py-1 rounded-md text-xs font-medium text-white transition-all shadow-lg"
+                      style={{
+                        backgroundColor: 'var(--accent)',
+                        boxShadow: `0 10px 15px -3px ${currentPalette.colors.accent}44`
+                      }}
                     >{t.visualizer.newArray}</button>
                   </>
                 ) : (
@@ -355,19 +379,26 @@ const AlgorithmVisualizer: React.FC = () => {
                       value={customInput}
                       onChange={(e) => setCustomInput(e.target.value)}
                       placeholder={t.visualizer.enterArrayPlaceholder}
-                      className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-md text-xs font-mono w-48 focus:outline-none focus:border-indigo-500"
+                      className="px-3 py-1 border rounded-md text-xs font-mono w-48 focus:outline-none transition-all"
+                      style={{
+                        backgroundColor: 'var(--bg-primary)',
+                        borderColor: 'var(--border)',
+                        color: 'var(--text-primary)'
+                      }}
                     />
                     <button
                       onClick={() => {
                         initArray();
                         setIsCustomMode(false);
                       }}
-                      className="p-1 bg-emerald-600 hover:bg-emerald-500 rounded-md"
+                      className="p-1 rounded-md text-white transition-all shadow-md"
+                      style={{ backgroundColor: 'var(--accent)' }}
                       title={t.visualizer.generate}
                     ><Check size={14} /></button>
                     <button
                       onClick={() => setIsCustomMode(false)}
-                      className="p-1 bg-slate-700 hover:bg-slate-600 rounded-md"
+                      className="p-1 rounded-md transition-all"
+                      style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
                     ><X size={14} /></button>
                   </div>
                 )}
