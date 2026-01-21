@@ -62,6 +62,54 @@ export const PALETTES: Palette[] = [
             textSecondary: '#cf9d7c',
             border: '#4b2137',
         }
+    },
+    {
+        id: 4,
+        name: 'Midnight Steel',
+        colors: {
+            bgPrimary: '#071739',
+            bgSecondary: '#4a6382',
+            accent: '#a68768',
+            textPrimary: '#cdd4da',
+            textSecondary: '#a4b6c4',
+            border: '#e2c29c',
+        }
+    },
+    {
+        id: 5,
+        name: 'Amber Abyss',
+        colors: {
+            bgPrimary: '#0c0f1e',
+            bgSecondary: '#153041',
+            accent: '#e17739',
+            textPrimary: '#fecb67',
+            textSecondary: '#6c504c',
+            border: '#214f5f',
+        }
+    },
+    {
+        id: 6,
+        name: 'Roseate Dusk',
+        colors: {
+            bgPrimary: '#140e1c',
+            bgSecondary: '#462037',
+            accent: '#a0525f',
+            textPrimary: '#f9aaad',
+            textSecondary: '#c5767c',
+            border: '#683a45',
+        }
+    },
+    {
+        id: 7,
+        name: 'Muted Lavender',
+        colors: {
+            bgPrimary: '#242e49',
+            bgSecondary: '#564963',
+            accent: '#b18b9a',
+            textPrimary: '#ffe0e6',
+            textSecondary: '#7c677a',
+            border: '#6e546d',
+        }
     }
 ];
 
