@@ -9,15 +9,16 @@ import {
   Settings,
   Menu,
   X,
-  Languages
+  Languages,
+  TableProperties
 } from 'lucide-react';
 
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface LayoutProps {
   children: React.ReactNode;
-  activeTab: 'visualizer' | 'sheets' | 'quiz';
-  onTabChange: (tab: 'visualizer' | 'sheets' | 'quiz') => void;
+  activeTab: 'visualizer' | 'sheets' | 'quiz' | 'complexity';
+  onTabChange: (tab: 'visualizer' | 'sheets' | 'quiz' | 'complexity') => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => {
@@ -28,6 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
     { id: 'visualizer', label: t.menu.visualizer, icon: Activity },
     { id: 'sheets', label: t.menu.sheets, icon: BookOpen },
     { id: 'quiz', label: t.menu.quiz, icon: BrainCircuit },
+    { id: 'complexity', label: t.menu.complexity, icon: TableProperties },
   ];
 
   return (
@@ -85,10 +87,11 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
             {menuItems.find(i => i.id === activeTab)?.label}
           </h2>
           <div className="flex items-center gap-4">
-            <div className="flex -space-x-2">
-              <img className="w-8 h-8 rounded-full border-2 border-slate-900" src="https://picsum.photos/seed/user1/32/32" alt="Avatar" />
-              <img className="w-8 h-8 rounded-full border-2 border-slate-900" src="https://picsum.photos/seed/user2/32/32" alt="Avatar" />
-            </div>
+            <img
+              className="w-9 h-9 rounded-full border-2 border-indigo-500/50 shadow-lg shadow-indigo-500/20"
+              src="https://avatars.githubusercontent.com/u/193535234?v=4"
+              alt="User Avatar"
+            />
             <button
               onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')}
               className="text-slate-400 hover:text-white flex items-center gap-2 px-2 py-1 rounded hover:bg-slate-800 transition-colors"
@@ -97,7 +100,14 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
               <Languages size={20} />
               <span className="text-sm font-bold">{language.toUpperCase()}</span>
             </button>
-            <a href="#" className="text-slate-400 hover:text-white"><Github size={20} /></a>
+            <a
+              href="https://github.com/ManonGras/BigO.dev/tree/main"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              <Github size={20} />
+            </a>
           </div>
         </header>
 

@@ -8,7 +8,8 @@ import {
   XCircle,
   Target,
   ArrowRight,
-  Search
+  Search,
+  ShieldCheck
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -102,6 +103,41 @@ const TechnicalSheets: React.FC = () => {
               ))}
             </div>
           </section>
+
+          {(selectedAlgo.terminationProof || selectedAlgo.correctnessProof) && (
+            <section className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-8">
+              {selectedAlgo.terminationProof && (
+                <div>
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <ShieldCheck size={20} className="text-indigo-400" />
+                    {t.sheets.terminationProof}
+                  </h3>
+                  <div className="space-y-2">
+                    {selectedAlgo.terminationProof.map((line, i) => (
+                      <p key={i} className="text-slate-400 leading-relaxed text-sm">
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {selectedAlgo.correctnessProof && (
+                <div>
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <ShieldCheck size={20} className="text-emerald-400" />
+                    {t.sheets.correctnessProof}
+                  </h3>
+                  <div className="space-y-2">
+                    {selectedAlgo.correctnessProof.map((line, i) => (
+                      <p key={i} className="text-slate-400 leading-relaxed text-sm">
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
         </div>
 
         {/* Complexity Sidebar */}

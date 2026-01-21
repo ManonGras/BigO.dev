@@ -17,6 +17,8 @@ export interface Algorithm {
   useCases: string[];
   pseudoCode: string[];
   implementation: string;
+  terminationProof?: string[];
+  correctnessProof?: string[];
 }
 
 export interface QuizQuestion {

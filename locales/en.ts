@@ -5,6 +5,7 @@ export const en: Translations = {
         visualizer: 'Visualization',
         sheets: 'Learn & Sheets',
         quiz: 'Quiz & Practice',
+        complexity: 'Complexity Overview',
     },
     common: {
         settings: 'Settings',
@@ -90,6 +91,8 @@ export const en: Translations = {
         worstCase: 'Worst Case',
         extraSpace: 'Extra Space',
         goToViz: 'Go to Visualization',
+        terminationProof: 'Termination Proof',
+        correctnessProof: 'Correctness Proof',
     },
     quiz: {
         completedTitle: 'Quiz Completed!',
@@ -110,5 +113,11 @@ export const en: Translations = {
         dynamicProgramming: 'Dynamic Programming',
         trees: 'Trees',
         linkedLists: 'Linked Lists',
+    },
+    complexity: {
+        title: 'Complexity Comparison',
+        timeTable: 'Time Complexity Comparison',
+        spaceTable: 'Space Complexity Comparison',
+        algorithm: 'Algorithm',
     },
 };

@@ -3,6 +3,7 @@ export interface Translations {
         visualizer: string;
         sheets: string;
         quiz: string;
+        complexity: string;
     };
     common: {
         settings: string;
@@ -88,6 +89,8 @@ export interface Translations {
         worstCase: string;
         extraSpace: string;
         goToViz: string;
+        terminationProof: string;
+        correctnessProof: string;
     };
     quiz: {
         completedTitle: string;
@@ -108,5 +111,11 @@ export interface Translations {
         dynamicProgramming: string;
         trees: string;
         linkedLists: string;
+    };
+    complexity: {
+        title: string;
+        timeTable: string;
+        spaceTable: string;
+        algorithm: string;
     };
 }

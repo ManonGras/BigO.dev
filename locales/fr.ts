@@ -5,6 +5,7 @@ export const fr: Translations = {
         visualizer: 'Visualisation',
         sheets: 'Cours & Fiches',
         quiz: 'Quiz & Pratique',
+        complexity: 'Récapitulatif Complexité',
     },
     common: {
         settings: 'Paramètres',
@@ -90,6 +91,8 @@ export const fr: Translations = {
         worstCase: 'Pire Cas',
         extraSpace: 'Espace Suppl.',
         goToViz: 'Aller à la visualisation',
+        terminationProof: 'Preuve de Terminaison',
+        correctnessProof: 'Preuve de Correction',
     },
     quiz: {
         completedTitle: 'Quiz Terminé !',
@@ -110,5 +113,11 @@ export const fr: Translations = {
         dynamicProgramming: 'Programmation Dynamique',
         trees: 'Arbres',
         linkedLists: 'Listes Chaînées',
+    },
+    complexity: {
+        title: 'Comparatif des Complexités',
+        timeTable: 'Comparaison de la Complexité Temporelle',
+        spaceTable: 'Comparaison de la Complexité Spatiale',
+        algorithm: 'Algorithme',
     },
 };
