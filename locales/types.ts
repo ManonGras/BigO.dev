@@ -72,6 +72,16 @@ export interface Translations {
         complexityChartTitle: string;
         realVsTheoretical: string;
         theory: string;
+        practiceMode: string;
+        practiceModeTitle: string;
+        practiceError: string;
+        practiceSuccess: string;
+        practiceCompleted: string;
+        practiceNextStep: string;
+        bubbleSortError: string;
+        selectionSortError: string;
+        insertionSortError: string;
+        genericError: string;
         controls: {
             reset: string;
             stepBackward: string;
