@@ -24,7 +24,9 @@ import {
   generateSinglyLinkedListSearchSteps,
   generateSinglyLinkedListDeleteSteps
 } from '../../utils/algo-generators';
-import { ChevronDown, Edit3, Check, X } from 'lucide-react';
+import { ChevronDown, Edit3, Check, X, TrendingUp, Layout as LayoutIcon, Plus, Minus, RefreshCw, Search } from 'lucide-react';
+import ComplexityChart from '../Complexity/ComplexityChart';
+import VisualDataEditor from './VisualDataEditor';
 import { TreeNode, LinkedListNode } from '../../types';
 
 const LinkedListRenderer: React.FC<{ head: LinkedListNode }> = ({ head }) => {
@@ -162,82 +164,105 @@ const AlgorithmVisualizer: React.FC = () => {
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(400);
+  const [complexityHistory, setComplexityHistory] = useState<Record<string, Array<{ n: number, ops: number }>>>({});
+  const [showEditor, setShowEditor] = useState(false);
+  const [currentData, setCurrentData] = useState<number[]>(Array.from({ length: 12 }, () => Math.floor(Math.random() * 90) + 10));
+  const [targetValue, setTargetValue] = useState<number>(42);
   const timerRef = useRef<number | null>(null);
 
   const algorithms = language === 'en' ? ALGORITHMS : ALGORITHMS_FR;
   const currentAlgo = algorithms.find(a => a.id === currentAlgoId)!;
 
-  const initArray = useCallback(() => {
-    let newArr: number[];
+  const generateRandomArray = useCallback((size: number) => {
+    const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 90) + 10);
+    setCurrentData(newArr);
+    setIsCustomMode(false);
+    return newArr;
+  }, []);
 
-    if (isCustomMode && customInput) {
-      // Parse custom input
-      const parsed = customInput.split(',')
-        .map(s => parseInt(s.trim()))
-        .filter(n => !isNaN(n));
-
-      if (parsed.length > 0) {
-        newArr = parsed;
-        // No setArraySize call to avoid triggering useEffect loop
-      } else {
-        newArr = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 90) + 10);
-      }
-    } else {
-      newArr = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 90) + 10);
-    }
-
+  const initArray = useCallback((customArr?: number[]) => {
+    const dataToUse = customArr || currentData;
     let newSteps: VizStep[] = [];
 
     switch (currentAlgoId) {
       case 'bubble-sort':
-        newSteps = generateBubbleSortSteps(newArr, t);
+        newSteps = generateBubbleSortSteps(dataToUse, t);
         break;
       case 'selection-sort':
-        newSteps = generateSelectionSortSteps(newArr, t);
+        newSteps = generateSelectionSortSteps(dataToUse, t);
         break;
       case 'insertion-sort':
-        newSteps = generateInsertionSortSteps(newArr, t);
+        newSteps = generateInsertionSortSteps(dataToUse, t);
         break;
       case 'merge-sort':
-        newSteps = generateMergeSortSteps(newArr, t);
+        newSteps = generateMergeSortSteps(dataToUse, t);
         break;
       case 'quick-sort':
-        newSteps = generateQuickSortSteps(newArr, t);
+        newSteps = generateQuickSortSteps(dataToUse, t);
         break;
       case 'binary-search':
-        newSteps = generateBinarySearchSteps(newArr, t);
+        newSteps = generateBinarySearchSteps(dataToUse, t, targetValue);
         break;
       case 'heap-sort':
-        newSteps = generateHeapSortSteps(newArr, t);
+        newSteps = generateHeapSortSteps(dataToUse, t);
         break;
       case 'bst-insert':
-        // For BST, we use the random array as insertion sequence
-        newSteps = generateBSTInsertionSteps(newArr, t);
+        newSteps = generateBSTInsertionSteps(dataToUse, t);
         break;
       case 'linked-list-singly':
-        newSteps = generateSinglyLinkedListSteps(newArr, t);
+        newSteps = generateSinglyLinkedListSteps(dataToUse, t);
         break;
       case 'linked-list-doubly':
-        newSteps = generateDoublyLinkedListSteps(newArr, t);
+        newSteps = generateDoublyLinkedListSteps(dataToUse, t);
         break;
       case 'linked-list-singly-search':
-        newSteps = generateSinglyLinkedListSearchSteps(newArr, t);
+        newSteps = generateSinglyLinkedListSearchSteps(dataToUse, t, targetValue);
         break;
       case 'linked-list-singly-delete':
-        newSteps = generateSinglyLinkedListDeleteSteps(newArr, t);
+        newSteps = generateSinglyLinkedListDeleteSteps(dataToUse, t, targetValue);
         break;
       default:
-        newSteps = generateBubbleSortSteps(newArr, t);
+        newSteps = generateBubbleSortSteps(dataToUse, t);
     }
 
     setSteps(newSteps);
     setCurrentStepIdx(0);
     setIsPlaying(false);
-  }, [arraySize, t, currentAlgoId, isCustomMode, customInput]);
+  }, [t, currentAlgoId, currentData, targetValue]);
 
+  // Handle side effects of changing algorithm or data
   useEffect(() => {
     initArray();
-  }, [initArray]);
+  }, [currentAlgoId, currentData, t]);
+
+  // Handle array size changes explicitly
+  useEffect(() => {
+    if (!isCustomMode) {
+      generateRandomArray(arraySize);
+    }
+  }, [arraySize, generateRandomArray]); // Removed isCustomMode from deps to avoid re-triggering when toggling mode
+
+  // Track complexity history
+  useEffect(() => {
+    if (steps.length > 0) {
+      const finalStep = steps[steps.length - 1];
+      const n = isCustomMode ? finalStep.array.length : arraySize;
+      const ops = finalStep.stats.comparisons + finalStep.stats.swaps;
+
+      if (ops > 0) {
+        setComplexityHistory(prev => {
+          const algoHistory = prev[currentAlgoId] || [];
+          if (!algoHistory.find(h => h.n === n && h.ops === ops)) {
+            return {
+              ...prev,
+              [currentAlgoId]: [...algoHistory, { n, ops }].sort((a, b) => a.n - b.n)
+            };
+          }
+          return prev;
+        });
+      }
+    }
+  }, [steps, currentAlgoId, isCustomMode, arraySize]);
 
   useEffect(() => {
     if (isPlaying && currentStepIdx < steps.length - 1) {
@@ -255,288 +280,273 @@ const AlgorithmVisualizer: React.FC = () => {
   const currentStep = steps[currentStepIdx] || steps[0];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full max-h-[calc(100vh-160px)]">
-      {/* Left Pane: Visualizer & Controls */}
-      <div className="lg:col-span-2 flex flex-col gap-6 overflow-hidden">
-        {/* Viz Area */}
-        <div className="flex-1 border rounded-3xl p-8 relative flex flex-col shadow-2xl"
-          style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex flex-col gap-4 w-full">
-              {/* Category Tabs */}
-              <div className="flex items-center gap-2 border-b pb-2 overflow-x-auto scrollbar-none" style={{ borderColor: 'var(--border)' }}>
-                <div className="p-1.5 rounded-lg shrink-0" style={{ backgroundColor: `${currentPalette.colors.accent}15`, color: 'var(--accent)' }}>
-                  <BarChart2 size={18} />
-                </div>
-                {(['Sorting', 'Searching', 'Trees', 'LinkedLists'] as const).map(cat => {
-                  const isActive = currentAlgo.category === cat;
-                  const keyMap: Record<string, keyof typeof t.categories> = {
-                    'Sorting': 'sorting',
-                    'Searching': 'searching',
-                    'Trees': 'trees',
-                    'LinkedLists': 'linkedLists'
-                  };
-                  return (
-                    <button
-                      key={cat}
-                      // If clicking a category, select the first algo of that category
-                      onClick={() => {
-                        const firstAlgo = algorithms.find(a => a.category === cat);
-                        if (firstAlgo) setCurrentAlgoId(firstAlgo.id);
-                      }}
-                      className={`
-                             px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap
-                             ${isActive ? 'text-white shadow-lg' : 'hover:text-white'}
-                           `}
-                      style={{
-                        backgroundColor: isActive ? 'var(--accent)' : 'transparent',
-                        color: isActive ? '#fff' : 'var(--text-secondary)',
-                        boxShadow: isActive ? `0 10px 15px -3px ${currentPalette.colors.accent}44` : 'none'
-                      }}
-                    >
-                      {t.categories[keyMap[cat]]}
-                    </button>
-                  );
-                })}
-              </div>
+    <div className="flex flex-col gap-8">
+      {/* Top Section: Visualization & Code Sidebar */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        {/* Left Pane: Visualizer & Controls */}
+        <div className="lg:col-span-2 flex flex-col gap-6">
+          {/* Viz Area */}
+          <div className="min-h-[550px] border rounded-3xl p-8 relative flex flex-col shadow-2xl overflow-hidden"
+            style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
 
-              {/* Algorithm Pills (Filtered by current category) */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-                {algorithms.filter(a => a.category === currentAlgo.category).map(algo => (
-                  <button
-                    key={algo.id}
-                    onClick={() => setCurrentAlgoId(algo.id)}
-                    className={`
-                           px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-all
-                           ${currentAlgoId === algo.id
-                        ? 'shadow-sm'
-                        : 'border-transparent hover:border-[var(--border)]'}
+            {/* Toolbar */}
+            <div className="flex flex-col gap-6 mb-8">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-4" style={{ borderColor: 'var(--border)' }}>
+                {/* Category Selection */}
+                <div className="flex items-center gap-1 p-1 bg-black/20 rounded-xl overflow-x-auto scrollbar-none">
+                  {(['Sorting', 'Searching', 'Trees', 'LinkedLists'] as const).map(cat => {
+                    const isActive = currentAlgo.category === cat;
+                    const keyMap: Record<string, keyof typeof t.categories> = {
+                      'Sorting': 'sorting',
+                      'Searching': 'searching',
+                      'Trees': 'trees',
+                      'LinkedLists': 'linkedLists'
+                    };
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          const firstAlgo = algorithms.find(a => a.category === cat);
+                          if (firstAlgo) setCurrentAlgoId(firstAlgo.id);
+                        }}
+                        className={`
+                          px-4 py-2 rounded-lg text-[10px] md:text-xs font-bold transition-all whitespace-nowrap
+                          ${isActive ? 'bg-[var(--accent)] text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}
                         `}
-                    style={{
-                      backgroundColor: currentAlgoId === algo.id ? 'var(--bg-secondary)' : 'transparent',
-                      borderColor: currentAlgoId === algo.id ? 'var(--accent)' : 'transparent',
-                      color: currentAlgoId === algo.id ? 'var(--accent)' : 'var(--text-secondary)'
-                    }}
-                  >
-                    {algo.name}
-                  </button>
-                ))}
-              </div>
-            </div>
+                      >
+                        {t.categories[keyMap[cat]]}
+                      </button>
+                    );
+                  })}
+                </div>
 
-            <div className="flex flex-col gap-2 items-end shrink-0 ml-auto">
-              <div className="flex gap-2">
-                {!isCustomMode ? (
-                  <>
+                {/* Algo Pills */}
+                <div className="flex items-center gap-2 overflow-x-auto scrollbar-none max-w-full">
+                  {algorithms.filter(a => a.category === currentAlgo.category).map(algo => (
                     <button
-                      onClick={() => setIsCustomMode(true)}
-                      className="px-3 py-1 border rounded-md text-xs font-bold flex items-center gap-2 transition-all"
-                      style={{
-                        backgroundColor: `${currentPalette.colors.accent}15`,
-                        borderColor: `${currentPalette.colors.accent}50`,
-                        color: 'var(--accent)'
-                      }}
+                      key={algo.id}
+                      onClick={() => setCurrentAlgoId(algo.id)}
+                      className={`
+                        px-3 py-1.5 rounded-full text-[10px] font-bold whitespace-nowrap border transition-all
+                        ${currentAlgoId === algo.id
+                          ? 'bg-slate-800 border-[var(--accent)] text-[var(--accent)] shadow-sm'
+                          : 'border-transparent text-slate-500 hover:text-slate-300'}
+                      `}
                     >
-                      <Edit3 size={12} /> {t.visualizer.customArray}
+                      {algo.name}
                     </button>
-                    <button
-                      onClick={() => {
-                        const size = Math.max(5, arraySize - 1);
-                        setArraySize(size);
-                      }}
-                      className="px-3 py-1 rounded-md text-xs font-medium transition-all"
-                      style={{
-                        backgroundColor: 'var(--bg-primary)',
-                        color: 'var(--text-primary)',
-                        border: '1px solid var(--border)'
-                      }}
-                    >{t.visualizer.decreaseSize}</button>
-                    <button
-                      onClick={() => {
-                        const size = Math.min(30, arraySize + 1);
-                        setArraySize(size);
-                      }}
-                      className="px-3 py-1 rounded-md text-xs font-medium transition-all"
-                      style={{
-                        backgroundColor: 'var(--bg-primary)',
-                        color: 'var(--text-primary)',
-                        border: '1px solid var(--border)'
-                      }}
-                    >{t.visualizer.increaseSize}</button>
-                    <button
-                      onClick={initArray}
-                      className="px-3 py-1 rounded-md text-xs font-medium text-white transition-all shadow-lg"
-                      style={{
-                        backgroundColor: 'var(--accent)',
-                        boxShadow: `0 10px 15px -3px ${currentPalette.colors.accent}44`
-                      }}
-                    >{t.visualizer.newArray}</button>
-                  </>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={customInput}
-                      onChange={(e) => setCustomInput(e.target.value)}
-                      placeholder={t.visualizer.enterArrayPlaceholder}
-                      className="px-3 py-1 border rounded-md text-xs font-mono w-48 focus:outline-none transition-all"
-                      style={{
-                        backgroundColor: 'var(--bg-primary)',
-                        borderColor: 'var(--border)',
-                        color: 'var(--text-primary)'
-                      }}
-                    />
-                    <button
-                      onClick={() => {
-                        initArray();
-                        setIsCustomMode(false);
-                      }}
-                      className="p-1 rounded-md text-white transition-all shadow-md"
-                      style={{ backgroundColor: 'var(--accent)' }}
-                      title={t.visualizer.generate}
-                    ><Check size={14} /></button>
-                    <button
-                      onClick={() => setIsCustomMode(false)}
-                      className="p-1 rounded-md transition-all"
-                      style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
-                    ><X size={14} /></button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1 flex items-end justify-center gap-2 mb-12 relative w-full">
-            {currentStep?.tree ? (
-              <div className="w-full h-full relative">
-                <RecursiveTree node={currentStep.tree} />
-              </div>
-            ) : currentStep?.linkedList ? (
-              <LinkedListRenderer head={currentStep.linkedList} />
-            ) : (
-              currentStep?.array.map((value, idx) => {
-                const isComparing = currentStep.comparing.includes(idx);
-                const isSwapping = currentStep.swapping.includes(idx);
-                const isSorted = currentStep.sorted.includes(idx);
-
-                let colorClass = 'bg-slate-700';
-                if (isComparing) colorClass = 'bg-amber-400 shadow-lg shadow-amber-400/20';
-                if (isSwapping) colorClass = 'bg-emerald-400 shadow-lg shadow-emerald-400/20';
-                if (isSorted) colorClass = 'bg-indigo-500';
-
-                return (
-                  <div key={idx} className="flex flex-col items-center gap-2 group w-full max-w-[40px]">
-                    <div className={`text-[10px] font-mono font-bold ${isComparing || isSwapping ? 'text-white' : 'text-slate-500'}`}>
-                      {value}
-                    </div>
-                    <div
-                      className={`w-full rounded-t-lg transition-all duration-300 ${colorClass}`}
-                      style={{ height: `${(value / 100) * 200}px` }}
-                    />
-                    <div className="text-[10px] text-slate-600 font-mono">{idx}</div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-
-          <VisualizerControls
-            isPlaying={isPlaying}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            onReset={() => { setIsPlaying(false); setCurrentStepIdx(0); }}
-            onStepForward={() => setCurrentStepIdx(prev => Math.min(steps.length - 1, prev + 1))}
-            onStepBackward={() => setCurrentStepIdx(prev => Math.max(0, prev - 1))}
-            speed={speed}
-            onSpeedChange={setSpeed}
-            progress={(currentStepIdx / (steps.length - 1 || 1)) * 100}
-          />
-        </div>
-
-        {/* Stats Row */}
-        <div className="grid grid-cols-4 gap-4">
-          {(() => {
-            const isExact = currentAlgo.timeComplexity.best === currentAlgo.timeComplexity.worst;
-            const symbol = isExact ? 'Θ' : 'O';
-            const label = isExact ? t.sheets.exactComplexity : t.visualizer.timeComplexity;
-            return [
-              { label: t.visualizer.comparisons, val: currentStep?.stats.comparisons || 0, icon: Hash, color: 'text-amber-400' },
-              { label: t.visualizer.swaps, val: currentStep?.stats.swaps || 0, icon: Zap, color: 'text-emerald-400' },
-              { label: `${symbol} - ${label}`, val: currentAlgo.timeComplexity.average.replace(/^O/, symbol), icon: Activity, color: 'text-indigo-400' },
-              { label: t.visualizer.spaceComplexity, val: currentAlgo.spaceComplexity, icon: Activity, color: 'text-slate-400' },
-            ].map((stat, i) => (
-              <div key={i} className="border p-4 rounded-2xl flex items-center gap-4"
-                style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
-                <stat.icon size={18} />
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{stat.label}</p>
-                  <p className="text-lg font-mono font-bold" style={{ color: 'var(--text-primary)' }}>{stat.val}</p>
+                  ))}
                 </div>
               </div>
-            ));
-          })()}
-        </div>
-      </div>
 
-      {/* Right Pane: Code & Variables */}
-      <div className="flex flex-col gap-6 h-full">
-        {/* Code Panel */}
-        <div className="flex-1 border rounded-3xl overflow-hidden flex flex-col shadow-2xl"
-          style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
-          <div className="px-6 py-4 flex items-center gap-2 border-b"
-            style={{ backgroundColor: 'rgba(0,0,0,0.2)', borderColor: 'var(--border)' }}>
-            <Code2 size={18} style={{ color: 'var(--accent)' }} />
-            <h4 className="font-semibold" style={{ color: 'var(--text-primary)' }}>{t.visualizer.implementation}</h4>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 font-mono text-sm leading-relaxed">
-            {currentAlgo.pseudoCode.map((line, idx) => (
-              <div
-                key={idx}
-                className={`
-                  px-4 py-1.5 rounded-lg transition-colors flex gap-4
-                  ${currentStep?.currentLine === idx ? 'border-l-4 text-white' : ''}
-                 `}
-                style={{
-                  backgroundColor: currentStep?.currentLine === idx ? `${currentPalette.colors.accent}33` : 'transparent',
-                  borderColor: currentStep?.currentLine === idx ? 'var(--accent)' : 'transparent',
-                  color: currentStep?.currentLine === idx ? 'var(--text-primary)' : 'var(--text-secondary)'
-                }}
-              >
-                <span className="text-xs w-4 select-none opacity-40">{idx + 1}</span>
-                <pre className="whitespace-pre-wrap">{line}</pre>
+              {/* Data & Structure Controls */}
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center p-1 bg-black/20 rounded-xl border border-[var(--border)] overflow-hidden">
+                    <button
+                      onClick={() => setArraySize(Math.max(5, arraySize - 1))}
+                      className="p-2 hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <div className="px-3 border-x border-[var(--border)] text-xs font-bold text-slate-300">
+                      n = {arraySize}
+                    </div>
+                    <button
+                      onClick={() => setArraySize(Math.min(30, arraySize + 1))}
+                      className="p-2 hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                  {['binary-search', 'linked-list-singly-search', 'linked-list-singly-delete'].includes(currentAlgoId) && (
+                    <div className="flex items-center gap-3 px-4 py-1.5 bg-white/[0.03] backdrop-blur-md rounded-xl border border-white/10 group focus-within:border-indigo-500/50 focus-within:bg-white/[0.06] transition-all duration-300">
+                      <div className="flex items-center gap-2">
+                        <Search size={12} className="text-indigo-400 group-focus-within:scale-110 transition-transform" />
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest select-none">Target</span>
+                      </div>
+                      <div className="h-4 w-[1px] bg-white/10" />
+                      <input
+                        type="number"
+                        value={targetValue}
+                        onChange={(e) => setTargetValue(parseInt(e.target.value) || 0)}
+                        className="w-8 bg-transparent text-xs font-black text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                    </div>
+                  )}
+                  <button
+                    onClick={() => generateRandomArray(arraySize)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all shadow-lg hover:scale-[1.02] active:scale-95"
+                    style={{ backgroundColor: 'var(--accent)', boxShadow: `0 8px 15px -3px ${currentPalette.colors.accent}44` }}
+                  >
+                    <RefreshCw size={14} /> {t.visualizer.newArray}
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setShowEditor(true)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all hover:bg-white/5 text-slate-300 hover:text-white"
+                  style={{ borderColor: 'var(--border)' }}
+                >
+                  <LayoutIcon size={14} className="text-[var(--accent)]" />
+                  Structure Editor
+                </button>
               </div>
-            ))}
+            </div>
+
+            {/* Rendering Area */}
+            <div className="flex-1 min-h-[300px] flex items-end justify-start md:justify-center gap-2 mb-12 relative w-full overflow-x-auto pb-6 scrollbar-thin">
+              {currentStep?.tree ? (
+                <div className="w-full h-full relative">
+                  <RecursiveTree node={currentStep.tree} />
+                </div>
+              ) : currentStep?.linkedList ? (
+                <LinkedListRenderer head={currentStep.linkedList} />
+              ) : (
+                currentStep?.array.map((value, idx) => {
+                  const isComparing = currentStep.comparing.includes(idx);
+                  const isSwapping = currentStep.swapping.includes(idx);
+                  const isSorted = currentStep.sorted.includes(idx);
+
+                  let colorClass = 'bg-slate-700';
+                  if (isComparing) colorClass = 'bg-amber-400 shadow-lg shadow-amber-400/20';
+                  if (isSwapping) colorClass = 'bg-emerald-400 shadow-lg shadow-emerald-400/20';
+                  if (isSorted) colorClass = 'bg-indigo-500';
+
+                  return (
+                    <div key={idx} className="flex flex-col items-center gap-2 group w-full max-w-[40px]">
+                      <div className={`text-[10px] font-mono font-bold ${isComparing || isSwapping ? 'text-white' : 'text-slate-500'}`}>
+                        {value}
+                      </div>
+                      <div
+                        className={`w-full rounded-t-lg transition-all duration-300 ${colorClass}`}
+                        style={{ height: `${(value / 100) * 200}px` }}
+                      />
+                      <div className="text-[10px] text-slate-600 font-mono">{idx}</div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <VisualizerControls
+              isPlaying={isPlaying}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onReset={() => { setIsPlaying(false); setCurrentStepIdx(0); }}
+              onStepForward={() => setCurrentStepIdx(prev => Math.min(steps.length - 1, prev + 1))}
+              onStepBackward={() => setCurrentStepIdx(prev => Math.max(0, prev - 1))}
+              speed={speed}
+              onSpeedChange={setSpeed}
+              progress={(currentStepIdx / (steps.length - 1 || 1)) * 100}
+            />
+          </div>
+
+          {/* Stats Row */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {(() => {
+              const isExact = currentAlgo.timeComplexity.best === currentAlgo.timeComplexity.worst;
+              const symbol = isExact ? 'Θ' : 'O';
+              const label = isExact ? t.sheets.exactComplexity : t.visualizer.timeComplexity;
+              return [
+                { label: t.visualizer.comparisons, val: currentStep?.stats.comparisons || 0, icon: Hash, color: 'text-amber-400' },
+                { label: t.visualizer.swaps, val: currentStep?.stats.swaps || 0, icon: Zap, color: 'text-emerald-400' },
+                { label: `${symbol} - ${label}`, val: currentAlgo.timeComplexity.average.replace(/^O/, symbol), icon: Activity, color: 'text-indigo-400' },
+                { label: t.visualizer.spaceComplexity, val: currentAlgo.spaceComplexity, icon: Activity, color: 'text-slate-400' },
+              ].map((stat, i) => (
+                <div key={i} className="border p-4 rounded-2xl flex items-center gap-4 shadow-lg transition-transform hover:scale-[1.02]"
+                  style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+                  <div className={`p-2 rounded-lg bg-slate-800 ${stat.color}`}>
+                    <stat.icon size={18} />
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-[8px] uppercase font-black text-slate-500 tracking-widest truncate">{stat.label}</p>
+                    <p className="text-sm font-mono font-bold truncate" style={{ color: 'var(--text-primary)' }}>{stat.val}</p>
+                  </div>
+                </div>
+              ));
+            })()}
           </div>
         </div>
 
-        {/* Variables State */}
-        <div className="h-64 border rounded-3xl p-6 shadow-2xl overflow-hidden"
-          style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
-          <h4 className="font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-            <Settings2 size={16} /> {t.visualizer.memoryState}
-          </h4>
-          <div className="space-y-3 font-mono text-sm">
-            <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>{t.visualizer.size}</span>
-              <span style={{ color: 'var(--accent)' }}>{arraySize}</span>
+        {/* Right Pane: Code & Variables - Sticky */}
+        <div className="flex flex-col gap-6 lg:sticky lg:top-4 h-fit">
+          {/* Code Panel */}
+          <div className="h-[450px] border rounded-3xl overflow-hidden flex flex-col shadow-2xl"
+            style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+            <div className="px-6 py-4 flex items-center gap-2 border-b"
+              style={{ backgroundColor: 'rgba(0,0,0,0.2)', borderColor: 'var(--border)' }}>
+              <Code2 size={18} className="text-[var(--accent)]" />
+              <h4 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{t.visualizer.implementation}</h4>
             </div>
-            <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>{t.visualizer.currentArray}</span>
-              <span className="text-xs" style={{ color: 'var(--text-primary)' }}>
-                {currentStep?.tree ? 'Tree Nodes...' : `[${currentStep?.array.slice(0, 5).join(', ')}...]`}
-              </span>
+            <div className="flex-1 overflow-y-auto p-4 font-mono text-[11px] leading-relaxed">
+              {currentAlgo.pseudoCode.map((line, idx) => (
+                <div
+                  key={idx}
+                  className={`
+                    px-4 py-1.5 rounded-lg transition-colors flex gap-4
+                    ${currentStep?.currentLine === idx ? 'border-l-4 text-white' : ''}
+                   `}
+                  style={{
+                    backgroundColor: currentStep?.currentLine === idx ? `${currentPalette.colors.accent}33` : 'transparent',
+                    borderColor: currentStep?.currentLine === idx ? 'var(--accent)' : 'transparent',
+                    color: currentStep?.currentLine === idx ? 'var(--text-primary)' : 'var(--text-secondary)'
+                  }}
+                >
+                  <span className="text-[10px] w-4 select-none opacity-40">{idx + 1}</span>
+                  <pre className="whitespace-pre-wrap">{line}</pre>
+                </div>
+              ))}
             </div>
-            <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>comparisons</span>
-              <span className="font-bold" style={{ color: 'var(--accent)' }}>{currentStep?.stats.comparisons}</span>
-            </div>
-            <div className="flex justify-between items-center py-2">
-              <span style={{ color: 'var(--text-secondary)' }}>{t.visualizer.lastSwapped}</span>
-              <span style={{ color: 'var(--accent)' }}>{currentStep?.swapping.length > 0 ? 'True' : 'False'}</span>
+          </div>
+
+          {/* Variables State */}
+          <div className="border rounded-3xl p-6 shadow-2xl overflow-hidden"
+            style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+            <h4 className="font-bold mb-4 flex items-center gap-2 text-sm" style={{ color: 'var(--text-primary)' }}>
+              <Settings2 size={16} className="text-[var(--accent)]" /> {t.visualizer.memoryState}
+            </h4>
+            <div className="space-y-3 font-mono text-[11px]">
+              <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                <span className="text-slate-500 uppercase text-[9px] font-black tracking-widest">{t.visualizer.size}</span>
+                <span className="font-bold" style={{ color: 'var(--accent)' }}>{arraySize}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                <span className="text-slate-500 uppercase text-[9px] font-black tracking-widest">comparisons</span>
+                <span className="font-bold" style={{ color: 'var(--accent)' }}>{currentStep?.stats.comparisons}</span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="text-slate-500 uppercase text-[9px] font-black tracking-widest">{t.visualizer.lastSwapped}</span>
+                <span className="font-bold" style={{ color: 'var(--accent)' }}>{currentStep?.swapping.length > 0 ? 'True' : 'False'}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Full Width Performance Section */}
+      <div className="w-full animate-in slide-in-from-bottom duration-700">
+        <ComplexityChart
+          history={complexityHistory[currentAlgoId] || []}
+          currentN={arraySize}
+          complexity={currentAlgo.timeComplexity.average}
+        />
+      </div>
+
+      {/* Visual Data Editor Modal */}
+      {showEditor && (
+        <VisualDataEditor
+          initialData={currentData}
+          onSave={(newData) => {
+            setShowEditor(false);
+            setIsCustomMode(true);
+            setCurrentData(newData);
+            setArraySize(newData.length);
+          }}
+          onCancel={() => setShowEditor(false)}
+          type={currentAlgo.category === 'Trees' ? 'tree' : currentAlgo.category === 'LinkedLists' ? 'list' : 'array'}
+        />
+      )}
     </div>
   );
 };

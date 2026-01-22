@@ -462,7 +462,7 @@ export const generateQuickSortSteps = (initialArray: number[], t: Translations):
     return steps;
 };
 
-export const generateBinarySearchSteps = (initialArray: number[], t: Translations): VizStep[] => {
+export const generateBinarySearchSteps = (initialArray: number[], t: Translations, targetValue?: number): VizStep[] => {
     const steps: VizStep[] = [];
     // Binary Search requires sorted array
     const arr = [...initialArray].sort((a, b) => a - b);
@@ -470,11 +470,10 @@ export const generateBinarySearchSteps = (initialArray: number[], t: Translation
     let comparisons = 0;
     let swaps = 0;
 
-    // Pick a random target from the array to guarantee it exists (50% chance) or random number
-    const exists = Math.random() > 0.3;
-    const target = exists
-        ? arr[Math.floor(Math.random() * n)]
-        : Math.floor(Math.random() * 100);
+    // Pick target: use provided value or random from array
+    const target = targetValue !== undefined
+        ? targetValue
+        : (Math.random() > 0.3 ? arr[Math.floor(Math.random() * n)] : Math.floor(Math.random() * 100));
 
     steps.push({
         array: [...arr],
@@ -924,7 +923,7 @@ export const generateDoublyLinkedListSteps = (inputArray: number[], t: Translati
     return steps;
 };
 
-export const generateSinglyLinkedListSearchSteps = (inputArray: number[], t: Translations): VizStep[] => {
+export const generateSinglyLinkedListSearchSteps = (inputArray: number[], t: Translations, targetValue?: number): VizStep[] => {
     const steps: VizStep[] = [];
     let head: LinkedListNode | undefined = undefined;
 
@@ -956,7 +955,7 @@ export const generateSinglyLinkedListSearchSteps = (inputArray: number[], t: Tra
     updatePositions(head);
 
     // Pick Target 
-    const target = inputArray[Math.floor(Math.random() * inputArray.length)];
+    const target = targetValue !== undefined ? targetValue : inputArray[Math.floor(Math.random() * inputArray.length)];
 
     steps.push({
         array: [],
@@ -1022,7 +1021,7 @@ export const generateSinglyLinkedListSearchSteps = (inputArray: number[], t: Tra
     return steps;
 };
 
-export const generateSinglyLinkedListDeleteSteps = (inputArray: number[], t: Translations): VizStep[] => {
+export const generateSinglyLinkedListDeleteSteps = (inputArray: number[], t: Translations, targetValue?: number): VizStep[] => {
     const steps: VizStep[] = [];
     let head: LinkedListNode | undefined = undefined;
 
@@ -1053,7 +1052,7 @@ export const generateSinglyLinkedListDeleteSteps = (inputArray: number[], t: Tra
     };
 
     // Pick Target to Delete
-    const target = inputArray[Math.floor(Math.random() * inputArray.length)];
+    const target = targetValue !== undefined ? targetValue : inputArray[Math.floor(Math.random() * inputArray.length)];
 
     steps.push({
         array: [],

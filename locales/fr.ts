@@ -71,6 +71,9 @@ export const fr: Translations = {
         size: 'n (taille)',
         currentArray: 'tableau_actuel',
         lastSwapped: 'dernier_echange',
+        complexityChartTitle: 'Analyse de Performance',
+        realVsTheoretical: 'Réel vs Théorique',
+        theory: 'Théorie',
         controls: {
             reset: 'Réinitialiser',
             stepBackward: 'Reculer',

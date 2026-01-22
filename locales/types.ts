@@ -69,6 +69,9 @@ export interface Translations {
         size: string;
         currentArray: string;
         lastSwapped: string;
+        complexityChartTitle: string;
+        realVsTheoretical: string;
+        theory: string;
         controls: {
             reset: string;
             stepBackward: string;
