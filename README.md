@@ -1,4 +1,4 @@
-# 🚀 BigO.dev
+# BigO.dev
 ### Algorithm Visualizer & Learning Center
 
 [![Deploy to GitHub Pages](https://github.com/ManonGras/BigO.dev/actions/workflows/deploy.yml/badge.svg)](https://github.com/ManonGras/BigO.dev/actions/workflows/deploy.yml)
