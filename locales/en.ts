@@ -117,6 +117,7 @@ export const en: Translations = {
         dynamicProgramming: 'Dynamic Programming',
         trees: 'Trees',
         linkedLists: 'Linked Lists',
+        comparison: 'Comparison'
     },
     complexity: {
         title: 'Complexity Comparison',

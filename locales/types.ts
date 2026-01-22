@@ -115,6 +115,7 @@ export interface Translations {
         dynamicProgramming: string;
         trees: string;
         linkedLists: string;
+        comparison: string;
     };
     complexity: {
         title: string;
