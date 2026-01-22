@@ -1,0 +1,42 @@
+:root {
+  --bg-primary: #020617;
+  --bg-secondary: #0f172a;
+  --accent: #4f46e5;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border: #1e293b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code, pre {
+  font-family: 'Fira Code', monospace;
+}
+
+@layer utilities {
+  .theme-bg-primary { background-color: var(--bg-primary); }
+  .theme-bg-secondary { background-color: var(--bg-secondary); }
+  .theme-accent { background-color: var(--accent); }
+  .theme-text-primary { color: var(--text-primary); }
+  .theme-text-secondary { color: var(--text-secondary); }
+  .theme-border { border-color: var(--border); }
+}
+
