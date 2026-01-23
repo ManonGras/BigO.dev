@@ -12,7 +12,8 @@ import {
   Languages,
   TableProperties,
   Palette as PaletteIcon,
-  GraduationCap
+  GraduationCap,
+  FileText
 } from 'lucide-react';
 
 import { useLanguage } from '../contexts/LanguageContext';
@@ -20,8 +21,8 @@ import { useTheme, PALETTES } from '../contexts/ThemeContext';
 
 interface LayoutProps {
   children: React.ReactNode;
-  activeTab: 'visualizer' | 'sheets' | 'quiz' | 'complexity' | 'mockExams';
-  onTabChange: (tab: 'visualizer' | 'sheets' | 'quiz' | 'complexity' | 'mockExams') => void;
+  activeTab: 'visualizer' | 'sheets' | 'lessons' | 'quiz' | 'complexity' | 'mockExams';
+  onTabChange: (tab: 'visualizer' | 'sheets' | 'lessons' | 'quiz' | 'complexity' | 'mockExams') => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => {
@@ -32,7 +33,8 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
 
   const menuItems = [
     { id: 'visualizer', label: t.menu.visualizer, icon: Activity },
-    { id: 'sheets', label: t.menu.sheets, icon: BookOpen },
+    { id: 'lessons', label: t.menu.lessons, icon: BookOpen },
+    { id: 'sheets', label: t.menu.sheets, icon: FileText },
     { id: 'quiz', label: t.menu.quiz, icon: BrainCircuit },
     { id: 'complexity', label: t.menu.complexity, icon: TableProperties },
     { id: 'mockExams', label: t.menu.mockExams, icon: GraduationCap },

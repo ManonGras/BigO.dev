@@ -2,6 +2,7 @@ export interface Translations {
     menu: {
         visualizer: string;
         sheets: string;
+        lessons: string;
         quiz: string;
         complexity: string;
         mockExams: string;
@@ -147,5 +148,131 @@ export interface Translations {
         complexity: string;
         showSolution: string;
         hideSolution: string;
+    };
+    lessons: {
+        ea4: {
+            title: string;
+            subtitle: string;
+            description: string;
+            intro: {
+                title: string;
+                content: string;
+                thematicTitle: string;
+                thematicContent: string;
+            };
+            genesis: {
+                title: string;
+                quote: string;
+                heritageTitle: string;
+                heritageContent: string;
+                khwarizmiTitle: string;
+                khwarizmiDesc: string;
+                evolutionTitle: string;
+                evolutionContent: string;
+            };
+            schedule: {
+                title: string;
+                tableTitleHeading: string;
+                tableFreqHeading: string;
+                tableSlotsHeading: string;
+                lectures: string;
+                lecturesFreq: string;
+                lecturesTime: string;
+                tutorials: string;
+                tutorialsFreq: string;
+                tutorialsTime: string;
+                practicals: string;
+                practicalsFreq: string;
+                practicalsTime: string;
+            };
+            team: {
+                title: string;
+                coordinator: string;
+                groupsTitle: string;
+                groups: { name: string; teacher: string }[];
+                labTeachersTitle: string;
+                labTeachers: string;
+            };
+            evaluation: {
+                title: string;
+                model: string;
+                modelName: string;
+                finalExam: string;
+                finalExamValue: string;
+                tdExams: string;
+                midterm: string;
+                attendance: string;
+                included: string;
+                mandatory: string;
+                assiduityTitle: string;
+                assiduityDesc: string;
+            };
+            communication: {
+                title: string;
+                moodleTitle: string;
+                moodleDesc: string;
+                discordTitle: string;
+                discordDesc: string;
+                emailTag: string;
+            };
+            modernDef: {
+                title: string;
+                description: string;
+                universality: string;
+                celerity: string;
+            };
+            pillars: {
+                title: string;
+                intro: string;
+                conceptionTitle: string;
+                conceptionDesc: string;
+                correctionTitle: string;
+                correctionDesc: string;
+                efficiencyTitle: string;
+                efficiencyDesc: string;
+            };
+            methodology: {
+                title: string;
+                invariantTitle: string;
+                invariantDesc: string;
+            };
+            analysis: {
+                title: string;
+                caseStudy: string;
+                operation: string;
+                algorithm: string;
+                invariant: string;
+                complexity: string;
+                addition: string;
+                multiplication: string;
+                naive: string;
+                byDigit: string;
+                school: string;
+                description: string;
+            };
+            python: {
+                title: string;
+                implementation: string;
+                philosophy: string;
+                philosophyDesc: string;
+                philosophyDetail: string;
+                polymorphismTitle: string;
+                polymorphismDesc: string;
+                dataTypes: string;
+                immutableTitle: string;
+                immutableDesc: string;
+                mutableTitle: string;
+                mutableDesc: string;
+                flowTitle: string;
+                flowDesc: string;
+                introspectionTitle: string;
+                introspectionDesc: string;
+            };
+            success: {
+                title: string;
+                description: string;
+                checklist: string[];
+            };
+        };
     };
 }
