@@ -4,6 +4,7 @@ export interface Translations {
         sheets: string;
         quiz: string;
         complexity: string;
+        mockExams: string;
     };
     common: {
         settings: string;
@@ -137,5 +138,14 @@ export interface Translations {
         bigTheta: string;
         bigOmega: string;
         notationsDescription: string;
+    };
+    mockExams: {
+        title: string;
+        exercise: string;
+        statement: string;
+        solution: string;
+        complexity: string;
+        showSolution: string;
+        hideSolution: string;
     };
 }

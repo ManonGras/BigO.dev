@@ -7,8 +7,9 @@ import AlgorithmVisualizer from './components/Visualizer/AlgorithmVisualizer';
 import TechnicalSheets from './components/Sheets/TechnicalSheets';
 import QuizModule from './components/Quiz/QuizModule';
 import ComplexityOverview from './components/Complexity/ComplexityOverview';
+import MockExams from './components/Exams/MockExams';
 
-type Tab = 'visualizer' | 'sheets' | 'quiz' | 'complexity';
+type Tab = 'visualizer' | 'sheets' | 'quiz' | 'complexity' | 'mockExams';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('visualizer');
@@ -23,6 +24,8 @@ const App: React.FC = () => {
         return <QuizModule />;
       case 'complexity':
         return <ComplexityOverview />;
+      case 'mockExams':
+        return <MockExams />;
       default:
         return <AlgorithmVisualizer />;
     }

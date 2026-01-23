@@ -6,6 +6,7 @@ export const fr: Translations = {
         sheets: 'Cours & Fiches',
         quiz: 'Quiz & Pratique',
         complexity: 'Récapitulatif Complexité',
+        mockExams: 'Examens Blancs',
     },
     common: {
         settings: 'Paramètres',
@@ -139,5 +140,14 @@ export const fr: Translations = {
         bigTheta: 'Grand Theta (Θ) - ni plus ni moins',
         bigOmega: 'Grand Omega (Ω) - au moins',
         notationsDescription: "Le Grand O représente la borne supérieure (au plus), le Grand Omega la borne inférieure (au moins), et le Grand Theta la borne exacte (ni plus ni moins).",
+    },
+    mockExams: {
+        title: 'Préparation aux Examens',
+        exercise: 'Exercice {0}',
+        statement: 'Énoncé',
+        solution: 'Correction',
+        complexity: 'Complexité',
+        showSolution: 'Afficher la correction',
+        hideSolution: 'Masquer la correction',
     },
 };

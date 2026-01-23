@@ -11,7 +11,8 @@ import {
   X,
   Languages,
   TableProperties,
-  Palette as PaletteIcon
+  Palette as PaletteIcon,
+  GraduationCap
 } from 'lucide-react';
 
 import { useLanguage } from '../contexts/LanguageContext';
@@ -19,8 +20,8 @@ import { useTheme, PALETTES } from '../contexts/ThemeContext';
 
 interface LayoutProps {
   children: React.ReactNode;
-  activeTab: 'visualizer' | 'sheets' | 'quiz' | 'complexity';
-  onTabChange: (tab: 'visualizer' | 'sheets' | 'quiz' | 'complexity') => void;
+  activeTab: 'visualizer' | 'sheets' | 'quiz' | 'complexity' | 'mockExams';
+  onTabChange: (tab: 'visualizer' | 'sheets' | 'quiz' | 'complexity' | 'mockExams') => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => {
@@ -34,6 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
     { id: 'sheets', label: t.menu.sheets, icon: BookOpen },
     { id: 'quiz', label: t.menu.quiz, icon: BrainCircuit },
     { id: 'complexity', label: t.menu.complexity, icon: TableProperties },
+    { id: 'mockExams', label: t.menu.mockExams, icon: GraduationCap },
   ];
 
   return (

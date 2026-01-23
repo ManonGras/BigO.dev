@@ -6,6 +6,7 @@ export const en: Translations = {
         sheets: 'Learn & Sheets',
         quiz: 'Quiz & Practice',
         complexity: 'Complexity Overview',
+        mockExams: 'Mock Exams',
     },
     common: {
         settings: 'Settings',
@@ -139,5 +140,14 @@ export const en: Translations = {
         bigTheta: 'Big Theta (Θ) - exactly',
         bigOmega: 'Big Omega (Ω) - at least',
         notationsDescription: 'Big O represents the upper bound (at most), Big Omega the lower bound (at least), and Big Theta the tight/exact bound (exactly).',
+    },
+    mockExams: {
+        title: 'Exam Preparation',
+        exercise: 'Exercise {0}',
+        statement: 'Statement',
+        solution: 'Solution',
+        complexity: 'Complexity',
+        showSolution: 'Show Solution',
+        hideSolution: 'Hide Solution',
     },
 };
