@@ -5,10 +5,11 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 import AlgorithmVisualizer from './components/Visualizer/AlgorithmVisualizer';
 import TechnicalSheets from './components/Sheets/TechnicalSheets';
+import Courses from './components/Courses/Courses';
 import QuizModule from './components/Quiz/QuizModule';
 import ComplexityOverview from './components/Complexity/ComplexityOverview';
 
-type Tab = 'visualizer' | 'sheets' | 'quiz' | 'complexity';
+type Tab = 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('visualizer');
@@ -19,6 +20,8 @@ const App: React.FC = () => {
         return <AlgorithmVisualizer />;
       case 'sheets':
         return <TechnicalSheets />;
+      case 'courses':
+        return <Courses />;
       case 'quiz':
         return <QuizModule />;
       case 'complexity':

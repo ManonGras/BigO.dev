@@ -3,7 +3,8 @@ import { Translations } from './types';
 export const en: Translations = {
     menu: {
         visualizer: 'Visualization',
-        sheets: 'Learn & Sheets',
+        sheets: 'Revision Sheets',
+        courses: 'Courses',
         quiz: 'Quiz & Practice',
         complexity: 'Complexity Overview',
     },
@@ -129,5 +130,10 @@ export const en: Translations = {
         bigTheta: 'Big Theta (Θ) - exactly',
         bigOmega: 'Big Omega (Ω) - at least',
         notationsDescription: 'Big O represents the upper bound (at most), Big Omega the lower bound (at least), and Big Theta the tight/exact bound (exactly).',
+    },
+    courses: {
+        selectCourse: 'Select a Course',
+        sections: 'Sections',
+        backToCourses: 'Back to Courses',
     },
 };

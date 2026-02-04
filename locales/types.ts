@@ -2,6 +2,7 @@ export interface Translations {
     menu: {
         visualizer: string;
         sheets: string;
+        courses: string;
         quiz: string;
         complexity: string;
     };
@@ -127,5 +128,10 @@ export interface Translations {
         bigTheta: string;
         bigOmega: string;
         notationsDescription: string;
+    };
+    courses: {
+        selectCourse: string;
+        sections: string;
+        backToCourses: string;
     };
 }

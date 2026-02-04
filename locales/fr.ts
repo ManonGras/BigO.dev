@@ -3,7 +3,8 @@ import { Translations } from './types';
 export const fr: Translations = {
     menu: {
         visualizer: 'Visualisation',
-        sheets: 'Cours & Fiches',
+        sheets: 'Fiches de Révision',
+        courses: 'Cours',
         quiz: 'Quiz & Pratique',
         complexity: 'Récapitulatif Complexité',
     },
@@ -129,5 +130,10 @@ export const fr: Translations = {
         bigTheta: 'Grand Theta (Θ) - ni plus ni moins',
         bigOmega: 'Grand Omega (Ω) - au moins',
         notationsDescription: "Le Grand O représente la borne supérieure (au plus), le Grand Omega la borne inférieure (au moins), et le Grand Theta la borne exacte (ni plus ni moins).",
+    },
+    courses: {
+        selectCourse: 'Sélectionner un Cours',
+        sections: 'Sections',
+        backToCourses: 'Retour aux Cours',
     },
 };
