@@ -8,6 +8,7 @@ export const fr: Translations = {
         quiz: 'Quiz & Pratique',
         complexity: 'Récapitulatif Complexité',
         mockExams: 'Examens Blancs',
+
     },
     common: {
         settings: 'Paramètres',

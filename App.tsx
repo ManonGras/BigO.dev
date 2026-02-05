@@ -10,6 +10,7 @@ import QuizModule from './components/Quiz/QuizModule';
 import ComplexityOverview from './components/Complexity/ComplexityOverview';
 import MockExams from './components/Exams/MockExams';
 
+
 type Tab = 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams';
 
 const App: React.FC = () => {
@@ -29,6 +30,7 @@ const App: React.FC = () => {
         return <ComplexityOverview />;
       case 'mockExams':
         return <MockExams />;
+
       default:
         return <AlgorithmVisualizer />;
     }

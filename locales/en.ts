@@ -8,6 +8,7 @@ export const en: Translations = {
         quiz: 'Quiz & Practice',
         complexity: 'Complexity Overview',
         mockExams: 'Mock Exams',
+
     },
     common: {
         settings: 'Settings',
