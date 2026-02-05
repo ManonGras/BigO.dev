@@ -8,6 +8,7 @@ export const fr: Translations = {
         quiz: 'Quiz & Pratique',
         complexity: 'Récapitulatif Complexité',
         mockExams: 'Examens Blancs',
+        audit: 'Audit de Code',
 
     },
     common: {
@@ -156,5 +157,15 @@ export const fr: Translations = {
         selectCourse: 'Sélectionner un Cours',
         sections: 'Sections',
         backToCourses: 'Retour aux Cours',
+    },
+    audit: {
+        title: 'Audit de Code',
+        description: 'Analysez le code et cliquez sur les lignes qui déterminent la complexité temporelle.',
+        linesSelected: '{0} ligne(s) sélectionnée(s)',
+        correct: 'Correct !',
+        incorrect: 'Pas tout à fait. Vérifiez les lignes surlignées.',
+        checkAudit: 'Vérifier la sélection',
+        nextAudit: 'Exercice Suivant',
+        resetAudit: 'Réinitialiser',
     },
 };

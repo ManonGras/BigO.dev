@@ -6,6 +6,7 @@ export interface Translations {
         quiz: string;
         complexity: string;
         mockExams: string;
+        audit: string;
     };
     common: {
         settings: string;
@@ -153,5 +154,15 @@ export interface Translations {
         selectCourse: string;
         sections: string;
         backToCourses: string;
+    };
+    audit: {
+        title: string;
+        description: string;
+        linesSelected: string;
+        correct: string;
+        incorrect: string;
+        checkAudit: string;
+        nextAudit: string;
+        resetAudit: string;
     };
 }
