@@ -3,9 +3,13 @@ import { Translations } from './types';
 export const fr: Translations = {
     menu: {
         visualizer: 'Visualisation',
-        sheets: 'Cours & Fiches',
+        sheets: 'Fiches de Révision',
+        courses: 'Cours',
         quiz: 'Quiz & Pratique',
         complexity: 'Récapitulatif Complexité',
+        mockExams: 'Examens Blancs',
+        audit: 'Audit de Code',
+
     },
     common: {
         settings: 'Paramètres',
@@ -74,6 +78,16 @@ export const fr: Translations = {
         complexityChartTitle: 'Analyse de Performance',
         realVsTheoretical: 'Réel vs Théorique',
         theory: 'Théorie',
+        practiceMode: 'Mode Pratique',
+        practiceModeTitle: 'Mode Pratique : {0}',
+        practiceError: 'Erreur de logique !',
+        practiceSuccess: 'Bien joué ! Étape validée.',
+        practiceCompleted: 'Félicitations ! Vous avez trié le tableau avec succès.',
+        practiceNextStep: 'À vous de jouer : effectuez la prochaine étape.',
+        bubbleSortError: 'Dans Bubble Sort, vous devez comparer deux éléments adjacents.',
+        selectionSortError: 'Dans Selection Sort, vous devez comparer l\'élément actuel avec le minimum provisoire.',
+        insertionSortError: 'Dans Insertion Sort, vous devez comparer avec l\'élément précédent pour trouver la bonne position.',
+        genericError: 'Cette action ne correspond pas à la logique de l\'algorithme.',
         controls: {
             reset: 'Réinitialiser',
             stepBackward: 'Reculer',
@@ -129,5 +143,29 @@ export const fr: Translations = {
         bigTheta: 'Grand Theta (Θ) - ni plus ni moins',
         bigOmega: 'Grand Omega (Ω) - au moins',
         notationsDescription: "Le Grand O représente la borne supérieure (au plus), le Grand Omega la borne inférieure (au moins), et le Grand Theta la borne exacte (ni plus ni moins).",
+    },
+    mockExams: {
+        title: 'Préparation aux Examens',
+        exercise: 'Exercice {0}',
+        statement: 'Énoncé',
+        solution: 'Correction',
+        complexity: 'Complexité',
+        showSolution: 'Afficher la correction',
+        hideSolution: 'Masquer la correction',
+    },
+    courses: {
+        selectCourse: 'Sélectionner un Cours',
+        sections: 'Sections',
+        backToCourses: 'Retour aux Cours',
+    },
+    audit: {
+        title: 'Audit de Code',
+        description: 'Analysez le code et cliquez sur les lignes qui déterminent la complexité temporelle.',
+        linesSelected: '{0} ligne(s) sélectionnée(s)',
+        correct: 'Correct !',
+        incorrect: 'Pas tout à fait. Vérifiez les lignes surlignées.',
+        checkAudit: 'Vérifier la sélection',
+        nextAudit: 'Exercice Suivant',
+        resetAudit: 'Réinitialiser',
     },
 };

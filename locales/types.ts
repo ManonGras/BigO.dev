@@ -2,8 +2,11 @@ export interface Translations {
     menu: {
         visualizer: string;
         sheets: string;
+        courses: string;
         quiz: string;
         complexity: string;
+        mockExams: string;
+        audit: string;
     };
     common: {
         settings: string;
@@ -72,6 +75,16 @@ export interface Translations {
         complexityChartTitle: string;
         realVsTheoretical: string;
         theory: string;
+        practiceMode: string;
+        practiceModeTitle: string;
+        practiceError: string;
+        practiceSuccess: string;
+        practiceCompleted: string;
+        practiceNextStep: string;
+        bubbleSortError: string;
+        selectionSortError: string;
+        insertionSortError: string;
+        genericError: string;
         controls: {
             reset: string;
             stepBackward: string;
@@ -127,5 +140,29 @@ export interface Translations {
         bigTheta: string;
         bigOmega: string;
         notationsDescription: string;
+    };
+    mockExams: {
+        title: string;
+        exercise: string;
+        statement: string;
+        solution: string;
+        complexity: string;
+        showSolution: string;
+        hideSolution: string;
+    };
+    courses: {
+        selectCourse: string;
+        sections: string;
+        backToCourses: string;
+    };
+    audit: {
+        title: string;
+        description: string;
+        linesSelected: string;
+        correct: string;
+        incorrect: string;
+        checkAudit: string;
+        nextAudit: string;
+        resetAudit: string;
     };
 }

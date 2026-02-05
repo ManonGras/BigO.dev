@@ -21,6 +21,7 @@ interface ControlsProps {
   speed: number;
   onSpeedChange: (val: number) => void;
   progress: number;
+  disabled?: boolean;
 }
 
 const VisualizerControls: React.FC<ControlsProps> = ({
@@ -32,7 +33,8 @@ const VisualizerControls: React.FC<ControlsProps> = ({
   onStepBackward,
   speed,
   onSpeedChange,
-  progress
+  progress,
+  disabled = false
 }) => {
   const { t } = useLanguage();
   const { currentPalette } = useTheme();
@@ -52,7 +54,8 @@ const VisualizerControls: React.FC<ControlsProps> = ({
         <div className="h-8 w-px mx-2" style={{ backgroundColor: 'var(--border)' }} />
         <button
           onClick={onStepBackward}
-          className="p-3 rounded-xl transition-all hover:bg-black/20"
+          disabled={disabled}
+          className={`p-3 rounded-xl transition-all ${disabled ? 'opacity-20 cursor-not-allowed' : 'hover:bg-black/20'}`}
           style={{ color: 'var(--text-secondary)' }}
           title={t.visualizer.controls.stepBackward}
         >
@@ -61,12 +64,13 @@ const VisualizerControls: React.FC<ControlsProps> = ({
 
         <button
           onClick={isPlaying ? onPause : onPlay}
+          disabled={disabled}
           className={`
-            p-4 rounded-xl transition-all transform active:scale-95 text-white shadow-lg
+            p-4 rounded-xl transition-all transform text-white shadow-lg ${disabled ? 'opacity-20 cursor-not-allowed' : 'hover:scale-[1.05] active:scale-95'}
           `}
           style={{
             backgroundColor: isPlaying ? '#f59e0b' : 'var(--accent)',
-            boxShadow: `0 10px 15px -3px ${isPlaying ? '#f59e0b44' : currentPalette.colors.accent + '44'}`
+            boxShadow: disabled ? 'none' : `0 10px 15px -3px ${isPlaying ? '#f59e0b44' : currentPalette.colors.accent + '44'}`
           }}
           title={isPlaying ? t.visualizer.controls.pause : t.visualizer.controls.play}
         >
@@ -75,7 +79,8 @@ const VisualizerControls: React.FC<ControlsProps> = ({
 
         <button
           onClick={onStepForward}
-          className="p-3 rounded-xl transition-all hover:bg-black/20"
+          disabled={disabled}
+          className={`p-3 rounded-xl transition-all ${disabled ? 'opacity-20 cursor-not-allowed' : 'hover:bg-black/20'}`}
           style={{ color: 'var(--text-secondary)' }}
           title={t.visualizer.controls.stepForward}
         >

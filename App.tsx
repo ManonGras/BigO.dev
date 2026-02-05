@@ -5,10 +5,13 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 import AlgorithmVisualizer from './components/Visualizer/AlgorithmVisualizer';
 import TechnicalSheets from './components/Sheets/TechnicalSheets';
+import Courses from './components/Courses/Courses';
 import QuizModule from './components/Quiz/QuizModule';
 import ComplexityOverview from './components/Complexity/ComplexityOverview';
+import MockExams from './components/Exams/MockExams';
+import CodeAudit from './components/Audit/CodeAudit';
 
-type Tab = 'visualizer' | 'sheets' | 'quiz' | 'complexity';
+type Tab = 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams' | 'audit';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('visualizer');
@@ -19,10 +22,17 @@ const App: React.FC = () => {
         return <AlgorithmVisualizer />;
       case 'sheets':
         return <TechnicalSheets />;
+      case 'courses':
+        return <Courses />;
       case 'quiz':
         return <QuizModule />;
       case 'complexity':
         return <ComplexityOverview />;
+      case 'mockExams':
+        return <MockExams />;
+      case 'audit':
+        return <CodeAudit />;
+
       default:
         return <AlgorithmVisualizer />;
     }

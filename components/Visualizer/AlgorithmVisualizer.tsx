@@ -174,6 +174,9 @@ const AlgorithmVisualizer: React.FC = () => {
   const [currentStepIdx2, setCurrentStepIdx2] = useState(0);
   const [showComparisonSummary, setShowComparisonSummary] = useState(false);
   const [isDataInitialized, setIsDataInitialized] = useState(false);
+  const [isPracticeMode, setIsPracticeMode] = useState(false);
+  const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
+  const [practiceFeedback, setPracticeFeedback] = useState<{ message: string, type: 'error' | 'success' | 'info' | null }>({ message: '', type: null });
   const timerRef = useRef<number | null>(null);
   const timerRef2 = useRef<number | null>(null);
 
@@ -261,7 +264,7 @@ const AlgorithmVisualizer: React.FC = () => {
   }, [steps, currentAlgoId, isCustomMode, arraySize]);
 
   useEffect(() => {
-    if (isPlaying) {
+    if (isPlaying && !isPracticeMode) {
       if (currentStepIdx < steps.length - 1) {
         timerRef.current = window.setTimeout(() => {
           setCurrentStepIdx(prev => prev + 1);
@@ -282,10 +285,76 @@ const AlgorithmVisualizer: React.FC = () => {
       if (timerRef.current) clearTimeout(timerRef.current);
       if (timerRef2.current) clearTimeout(timerRef2.current);
     };
-  }, [isPlaying, currentStepIdx, currentStepIdx2, steps.length, steps2.length, speed, isComparisonMode]);
+  }, [isPlaying, currentStepIdx, currentStepIdx2, steps.length, steps2.length, speed, isComparisonMode, isPracticeMode]);
 
   const currentStep = steps[currentStepIdx] || steps[0] || { array: [], comparing: [], swapping: [], sorted: [], stats: { comparisons: 0, swaps: 0 } };
   const currentStep2 = steps2[currentStepIdx2] || steps2[0] || { array: [], comparing: [], swapping: [], sorted: [], stats: { comparisons: 0, swaps: 0 } };
+
+  const handleElementClick = (idx: number) => {
+    if (!isPracticeMode || isPlaying) return;
+
+    const newSelection = [...selectedIndices];
+    if (newSelection.includes(idx)) {
+      setSelectedIndices(newSelection.filter(i => i !== idx));
+      return;
+    }
+
+    newSelection.push(idx);
+    setSelectedIndices(newSelection);
+
+    if (newSelection.length === 2) {
+      verifyPracticeStep(newSelection);
+    }
+  };
+
+  const verifyPracticeStep = (indices: number[]) => {
+    if (currentStepIdx >= steps.length - 1) return;
+
+    // Find the next significant step (either comparing or swapping)
+    let nextStepIdx = currentStepIdx + 1;
+    while (nextStepIdx < steps.length - 1 &&
+      steps[nextStepIdx].comparing.length === 0 &&
+      steps[nextStepIdx].swapping.length === 0) {
+      nextStepIdx++;
+    }
+
+    const nextStep = steps[nextStepIdx];
+    const expectedIndices = nextStep.swapping.length > 0 ? nextStep.swapping : nextStep.comparing;
+
+    const isCorrect = indices.every(i => expectedIndices.includes(i)) &&
+      expectedIndices.every(i => indices.includes(i));
+
+    if (isCorrect) {
+      setCurrentStepIdx(nextStepIdx);
+      setPracticeFeedback({ message: t.visualizer.practiceSuccess, type: 'success' });
+      setSelectedIndices([]);
+
+      if (nextStepIdx >= steps.length - 1) {
+        setPracticeFeedback({ message: t.visualizer.practiceCompleted, type: 'success' });
+      }
+    } else {
+      let errorMsg = t.visualizer.practiceError;
+      if (currentAlgoId === 'bubble-sort') {
+        const isAdjacent = Math.abs(indices[0] - indices[1]) === 1;
+        if (!isAdjacent) errorMsg = t.visualizer.bubbleSortError;
+        else errorMsg = t.visualizer.genericError;
+      } else if (currentAlgoId === 'selection-sort') {
+        errorMsg = t.visualizer.selectionSortError;
+      } else if (currentAlgoId === 'insertion-sort') {
+        errorMsg = t.visualizer.insertionSortError;
+      } else {
+        errorMsg = t.visualizer.genericError;
+      }
+
+      setPracticeFeedback({ message: errorMsg, type: 'error' });
+      setSelectedIndices([]);
+    }
+
+    // Auto-clear feedback after 3 seconds
+    setTimeout(() => {
+      setPracticeFeedback(prev => ({ ...prev, type: prev.type === 'info' ? 'info' : null }));
+    }, 3000);
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -433,9 +502,38 @@ const AlgorithmVisualizer: React.FC = () => {
                     <LayoutIcon size={14} className="text-[var(--accent)]" />
                     Structure Editor
                   </button>
+                  {currentAlgo.category === 'Sorting' && (
+                    <button
+                      onClick={() => {
+                        setIsPracticeMode(!isPracticeMode);
+                        setIsPlaying(false);
+                        setCurrentStepIdx(0);
+                        setPracticeFeedback({
+                          message: !isPracticeMode ? t.visualizer.practiceNextStep : '',
+                          type: !isPracticeMode ? 'info' : null
+                        });
+                      }}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${isPracticeMode ? 'bg-amber-500 border-amber-400 text-white shadow-lg' : 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'}`}
+                    >
+                      <Zap size={14} className={isPracticeMode ? 'animate-pulse' : ''} />
+                      {isPracticeMode ? 'Practice Mode ON' : 'Practice Mode'}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
+
+            {/* Practice Feedback Overlay */}
+            {isPracticeMode && practiceFeedback.type && (
+              <div className={`absolute top-32 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl border shadow-2xl animate-in fade-in zoom-in duration-300 flex items-center gap-3
+                ${practiceFeedback.type === 'error' ? 'bg-red-500/20 border-red-500/50 text-red-200' :
+                  practiceFeedback.type === 'success' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-200' :
+                    'bg-amber-500/20 border-amber-500/50 text-amber-200'}`}
+              >
+                {practiceFeedback.type === 'error' ? <X size={18} /> : practiceFeedback.type === 'success' ? <Check size={18} /> : <Zap size={18} />}
+                <span className="text-sm font-bold">{practiceFeedback.message}</span>
+              </div>
+            )}
 
             {/* Rendering Area */}
             <div className={`flex-1 min-h-[300px] mb-12 relative w-full ${isComparisonMode ? 'grid grid-cols-2 gap-8' : 'flex items-end justify-start md:justify-center gap-2 overflow-x-auto pb-6 scrollbar-thin'}`}>
@@ -451,19 +549,25 @@ const AlgorithmVisualizer: React.FC = () => {
                     const isComparing = currentStep.comparing.includes(idx);
                     const isSwapping = currentStep.swapping.includes(idx);
                     const isSorted = currentStep.sorted.includes(idx);
+                    const isSelected = selectedIndices.includes(idx);
 
                     let colorClass = 'bg-slate-700';
                     if (isComparing) colorClass = 'bg-amber-400 shadow-lg shadow-amber-400/20';
                     if (isSwapping) colorClass = 'bg-emerald-400 shadow-lg shadow-emerald-400/20';
                     if (isSorted) colorClass = 'bg-indigo-500';
+                    if (isSelected) colorClass = 'bg-white';
 
                     return (
-                      <div key={idx} className="flex flex-col items-center gap-2 group w-full max-w-[40px]">
-                        <div className={`text-[10px] font-mono font-bold ${isComparing || isSwapping ? 'text-white' : 'text-slate-500'}`}>
+                      <div
+                        key={idx}
+                        className={`flex flex-col items-center gap-2 group w-full max-w-[40px] cursor-pointer transition-transform hover:scale-110 active:scale-95`}
+                        onClick={() => handleElementClick(idx)}
+                      >
+                        <div className={`text-[10px] font-mono font-bold ${isComparing || isSwapping || isSelected ? 'text-white' : 'text-slate-500'}`}>
                           {value}
                         </div>
                         <div
-                          className={`w-full rounded-t-lg transition-all duration-300 ${colorClass}`}
+                          className={`w-full rounded-t-lg transition-all duration-300 ${colorClass} ${isSelected ? 'ring-4 ring-white shadow-[0_0_20px_rgba(255,255,255,0.5)]' : ''}`}
                           style={{ height: `${(value / 100) * 200}px` }}
                         />
                         <div className="text-[10px] text-slate-600 font-mono">{idx}</div>
@@ -545,6 +649,7 @@ const AlgorithmVisualizer: React.FC = () => {
               }}
               speed={speed}
               onSpeedChange={setSpeed}
+              disabled={isPracticeMode}
               progress={isComparisonMode
                 ? (Math.max(currentStepIdx, currentStepIdx2) / Math.max(steps.length - 1, steps2.length - 1 || 1)) * 100
                 : (currentStepIdx / (steps.length - 1 || 1)) * 100}
