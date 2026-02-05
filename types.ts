@@ -72,3 +72,29 @@ export interface VizStep {
   tree?: TreeNode; // For Tree algorithms
   linkedList?: LinkedListNode; // For Linked List algorithms (Head node)
 }
+
+export interface CourseSection {
+  id: string;
+  title: string;
+  content: string[];
+  subsections?: {
+    title: string;
+    content: string[];
+  }[];
+  codeExample?: {
+    language: string;
+    code: string;
+    caption?: string;
+  };
+  table?: {
+    headers: string[];
+    rows: string[][];
+  };
+}
+
+export interface Course {
+  id: string;
+  title: string;
+  description: string;
+  sections: CourseSection[];
+}

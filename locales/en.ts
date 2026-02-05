@@ -3,7 +3,8 @@ import { Translations } from './types';
 export const en: Translations = {
     menu: {
         visualizer: 'Visualization',
-        sheets: 'Learn & Sheets',
+        sheets: 'Revision Sheets',
+        courses: 'Courses',
         quiz: 'Quiz & Practice',
         complexity: 'Complexity Overview',
         mockExams: 'Mock Exams',
@@ -149,5 +150,10 @@ export const en: Translations = {
         complexity: 'Complexity',
         showSolution: 'Show Solution',
         hideSolution: 'Hide Solution',
+    },
+    courses: {
+        selectCourse: 'Select a Course',
+        sections: 'Sections',
+        backToCourses: 'Back to Courses',
     },
 };

@@ -20,8 +20,8 @@ import { useTheme, PALETTES } from '../contexts/ThemeContext';
 
 interface LayoutProps {
   children: React.ReactNode;
-  activeTab: 'visualizer' | 'sheets' | 'quiz' | 'complexity' | 'mockExams';
-  onTabChange: (tab: 'visualizer' | 'sheets' | 'quiz' | 'complexity' | 'mockExams') => void;
+  activeTab: 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams';
+  onTabChange: (tab: 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams') => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => {
@@ -33,6 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
   const menuItems = [
     { id: 'visualizer', label: t.menu.visualizer, icon: Activity },
     { id: 'sheets', label: t.menu.sheets, icon: BookOpen },
+    { id: 'courses', label: t.menu.courses, icon: BookOpen },
     { id: 'quiz', label: t.menu.quiz, icon: BrainCircuit },
     { id: 'complexity', label: t.menu.complexity, icon: TableProperties },
     { id: 'mockExams', label: t.menu.mockExams, icon: GraduationCap },

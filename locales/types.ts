@@ -2,6 +2,7 @@ export interface Translations {
     menu: {
         visualizer: string;
         sheets: string;
+        courses: string;
         quiz: string;
         complexity: string;
         mockExams: string;
@@ -147,5 +148,10 @@ export interface Translations {
         complexity: string;
         showSolution: string;
         hideSolution: string;
+    };
+    courses: {
+        selectCourse: string;
+        sections: string;
+        backToCourses: string;
     };
 }
