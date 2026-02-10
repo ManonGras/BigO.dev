@@ -287,8 +287,8 @@ const AlgorithmVisualizer: React.FC = () => {
     };
   }, [isPlaying, currentStepIdx, currentStepIdx2, steps.length, steps2.length, speed, isComparisonMode, isPracticeMode]);
 
-  const currentStep = steps[currentStepIdx] || steps[0] || { array: [], comparing: [], swapping: [], sorted: [], stats: { comparisons: 0, swaps: 0 } };
-  const currentStep2 = steps2[currentStepIdx2] || steps2[0] || { array: [], comparing: [], swapping: [], sorted: [], stats: { comparisons: 0, swaps: 0 } };
+  const currentStep = steps[currentStepIdx] || steps[0] || { array: [], comparing: [], swapping: [], sorted: [], stats: { comparisons: 0, swaps: 0 }, currentLine: 0, message: '', tree: undefined, linkedList: undefined };
+  const currentStep2 = steps2[currentStepIdx2] || steps2[0] || { array: [], comparing: [], swapping: [], sorted: [], stats: { comparisons: 0, swaps: 0 }, currentLine: 0, message: '', tree: undefined, linkedList: undefined };
 
   const handleElementClick = (idx: number) => {
     if (!isPracticeMode || isPlaying) return;
