@@ -428,6 +428,455 @@ export const COURSES: Course[] = [
             },
         ],
     },
+    {
+        id: 'search-and-sorting',
+        title: 'Search Algorithms and Comparison-Based Sorting',
+        description: 'Sequential and binary search, then the four fundamental sorting algorithms with correctness proofs and complexity analysis',
+        sections: [
+            {
+                id: 'sequential-search',
+                title: 'Sequential Search',
+                content: [
+                    'In an unsorted list, finding an element requires examining each entry one by one. This is the most general but least efficient search strategy.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithm and Complexity',
+                        content: [
+                            'We scan the array from index 0 to n-1 and return the index as soon as the target value is found, or -1 if exhausted.',
+                            '• Best case: Ω(1) — the element is at position 0.',
+                            '• Worst and average case: Θ(n) — element absent or at the end.',
+                            'No preprocessing of the data is required, making it universally applicable.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'binary-search',
+                title: 'Binary Search (Dichotomy)',
+                content: [
+                    'If the array is sorted, we can exploit the order to eliminate half the candidates at each step — the "divide and conquer" strategy applied to search.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithm',
+                        content: [
+                            'Maintain two pointers lo and hi. At each step, compute mid = (lo + hi) // 2 and compare array[mid] to the target.',
+                            '• If array[mid] == target: found, return mid.',
+                            '• If array[mid] < target: search in the right half (lo = mid + 1).',
+                            '• If array[mid] > target: search in the left half (hi = mid - 1).',
+                            'Stop when lo > hi (element absent).',
+                        ],
+                    },
+                    {
+                        title: 'Complexity and Correctness',
+                        content: [
+                            'At each step the search space is halved. After k steps, the remaining space has size n/2ᵏ. When n/2ᵏ < 1, i.e. k > log₂ n, the search terminates.',
+                            'Termination invariant: hi - lo strictly decreases at each iteration.',
+                            'Complexity: Θ(log n) — exponentially faster than sequential search on large sorted datasets.',
+                            'Critical implementation note: avoid copying sub-arrays (which would add O(n) space cost); work with indices on the original array.',
+                        ],
+                    },
+                    {
+                        title: 'Impact of Sorting on Other Operations',
+                        content: [
+                            'A sorted array enables much more than fast search:',
+                            '• Finding the maximum: O(1) — it is the last element.',
+                            '• Removing duplicates: a linear scan Θ(n) suffices instead of O(n²).',
+                            '• Counting occurrences of a value: binary search + linear scan = O(log n + k).',
+                            'The upfront cost of sorting (Θ(n log n)) is quickly amortised when multiple queries are needed.',
+                        ],
+                    },
+                ],
+                codeExample: {
+                    language: 'python',
+                    caption: 'Binary Search Implementation',
+                    code: `def binary_search(arr, target):
+    lo, hi = 0, len(arr) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1  # not found`,
+                },
+            },
+            {
+                id: 'selection-sort',
+                title: 'Selection Sort',
+                content: [
+                    'At each pass i, find the minimum of the unsorted suffix A[i..n-1] and swap it into position i.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithm and Invariant',
+                        content: [
+                            'Loop invariant: after i iterations, A[0..i-1] contains the i smallest elements in sorted order.',
+                            'The algorithm always performs exactly n(n-1)/2 comparisons regardless of the input — even on an already-sorted array.',
+                        ],
+                    },
+                    {
+                        title: 'Complexity',
+                        content: [
+                            '• Time: Θ(n²) in all cases (best, average, worst). The inner loop always runs fully.',
+                            '• Space: Θ(1) auxiliary — fully in-place.',
+                            '• Swaps: at most n-1 (better than Bubble Sort).',
+                            'Simple to implement but dominated by Insertion Sort on nearly-sorted data.',
+                        ],
+                    },
+                ],
+                codeExample: {
+                    language: 'python',
+                    caption: 'Selection Sort',
+                    code: `def selection_sort(A):
+    n = len(A)
+    for i in range(n - 1):
+        min_idx = i
+        for j in range(i + 1, n):
+            if A[j] < A[min_idx]:
+                min_idx = j
+        A[i], A[min_idx] = A[min_idx], A[i]`,
+                },
+            },
+            {
+                id: 'insertion-sort',
+                title: 'Insertion Sort',
+                content: [
+                    'Build the sorted array one element at a time by inserting each new element into its correct position among those already sorted.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithm and Invariant',
+                        content: [
+                            'Loop invariant: after i iterations, A[0..i] is sorted.',
+                            'Each element is shifted left until it finds its correct position.',
+                        ],
+                    },
+                    {
+                        title: 'Complexity',
+                        content: [
+                            '• Best case: Ω(n) — already sorted, only n-1 comparisons.',
+                            '• Worst case: O(n²) — reverse-sorted, every element shifts all the way.',
+                            '• Average case: Θ(n²).',
+                            '• Space: Θ(1) auxiliary.',
+                            'Excellent for small arrays or nearly-sorted data. Used as a subroutine in hybrid sorts (TimSort, IntroSort).',
+                        ],
+                    },
+                ],
+                table: {
+                    headers: ['Algorithm', 'Best', 'Average', 'Worst', 'Space', 'Stable'],
+                    rows: [
+                        ['Selection Sort', 'Θ(n²)', 'Θ(n²)', 'Θ(n²)', 'Θ(1)', 'No'],
+                        ['Insertion Sort', 'Θ(n)', 'Θ(n²)', 'Θ(n²)', 'Θ(1)', 'Yes'],
+                        ['Merge Sort', 'Θ(n log n)', 'Θ(n log n)', 'Θ(n log n)', 'Θ(n)', 'Yes'],
+                        ['Quick Sort', 'Θ(n log n)', 'Θ(n log n)', 'Θ(n²)', 'Θ(log n)', 'No'],
+                    ],
+                },
+            },
+            {
+                id: 'merge-sort',
+                title: 'Merge Sort',
+                content: [
+                    'Merge Sort applies the divide-and-conquer paradigm: split the array in two halves, recursively sort each half, then merge the two sorted halves.',
+                ],
+                subsections: [
+                    {
+                        title: 'Merge Procedure',
+                        content: [
+                            'Given two sorted arrays L and R, produce a single sorted array by repeatedly picking the smaller front element.',
+                            'This merge costs Θ(n) time and Θ(n) auxiliary space — the main drawback of the algorithm.',
+                        ],
+                    },
+                    {
+                        title: 'Complexity via Recurrence',
+                        content: [
+                            'T(n) = 2·T(n/2) + Θ(n). By the Master Theorem (case 2): T(n) = Θ(n log n).',
+                            'This complexity holds in all cases — Merge Sort is asymptotically optimal for comparison-based sorting.',
+                            'It is stable (equal elements preserve their relative order) but not in-place: Θ(n) extra memory is needed for the merge step.',
+                        ],
+                    },
+                ],
+                codeExample: {
+                    language: 'python',
+                    caption: 'Merge Sort',
+                    code: `def merge_sort(A):
+    if len(A) <= 1:
+        return A
+    mid = len(A) // 2
+    L = merge_sort(A[:mid])
+    R = merge_sort(A[mid:])
+    return merge(L, R)
+
+def merge(L, R):
+    result, i, j = [], 0, 0
+    while i < len(L) and j < len(R):
+        if L[i] <= R[j]:
+            result.append(L[i]); i += 1
+        else:
+            result.append(R[j]); j += 1
+    return result + L[i:] + R[j:]`,
+                },
+            },
+            {
+                id: 'quick-sort',
+                title: 'Quick Sort',
+                content: [
+                    'Quick Sort partitions the array around a pivot element, placing smaller elements to its left and larger to its right, then recursively sorts both partitions.',
+                ],
+                subsections: [
+                    {
+                        title: 'Pivot Choice and Partitioning',
+                        content: [
+                            'The key step is partitioning: rearrange A[lo..hi] so that all elements ≤ pivot come first, then pivot, then elements > pivot.',
+                            'Pivot choice critically affects performance:',
+                            '• Fixed pivot (first or last): Θ(n²) on sorted/reverse-sorted input.',
+                            '• Random pivot: Expected Θ(n log n) — eliminates systematic worst cases.',
+                            '• Median-of-three: Good heuristic in practice.',
+                        ],
+                    },
+                    {
+                        title: 'Complexity',
+                        content: [
+                            '• Best / average: Θ(n log n) — balanced partitions.',
+                            '• Worst case: Θ(n²) — one partition always empty (pivot is the minimum or maximum).',
+                            '• Space: Θ(log n) average (call stack depth); Θ(n) worst.',
+                            'Despite the worst-case, Quick Sort is often faster in practice than Merge Sort due to better cache performance and smaller constants.',
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: 'advanced-sorting',
+        title: 'Advanced Sorting: Selection, Radix Sort, and Hybrid Algorithms',
+        description: 'QuickSelect for order statistics, non-comparison radix sort, and the theoretical lower bound Ω(n log n)',
+        sections: [
+            {
+                id: 'lower-bound',
+                title: 'Theoretical Lower Bound: Ω(n log n)',
+                content: [
+                    'Can we do better than Θ(n log n) for sorting? The answer is no — for comparison-based algorithms.',
+                ],
+                subsections: [
+                    {
+                        title: 'Decision Tree Argument',
+                        content: [
+                            'Any comparison-based sorting algorithm can be modelled as a binary decision tree: each internal node is a comparison (A[i] ≤ A[j]?), each leaf is a permutation.',
+                            'There are n! possible orderings of n elements, so the tree must have at least n! leaves.',
+                            'A binary tree of height h has at most 2ʰ leaves, so h ≥ log₂(n!).',
+                            'By Stirling\'s approximation: log₂(n!) ≈ n log₂ n - n log₂ e = Θ(n log n).',
+                            'Therefore any comparison-based sorting algorithm requires Ω(n log n) comparisons in the worst case. Merge Sort achieves this bound — it is optimal.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'quickselect',
+                title: 'QuickSelect: Finding the k-th Smallest Element',
+                content: [
+                    'Finding the median or k-th order statistic does not require full sorting. QuickSelect, a variant of Quick Sort, achieves expected Θ(n).',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithm',
+                        content: [
+                            'After partitioning around a pivot p that lands at position q:',
+                            '• If k == q: the pivot is the k-th smallest — return it.',
+                            '• If k < q: recurse only on the left partition.',
+                            '• If k > q: recurse only on the right partition.',
+                            'Unlike Quick Sort, only ONE recursive call is made per step.',
+                        ],
+                    },
+                    {
+                        title: 'Complexity',
+                        content: [
+                            '• Average: Θ(n) with a random pivot — the recurrence T(n) = T(n/2) + Θ(n) solves to Θ(n).',
+                            '• Worst case: Θ(n²) — same as Quick Sort with bad pivot.',
+                            'The deterministic Median-of-Medians algorithm guarantees Θ(n) worst case, but with a large constant that makes it impractical.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'radix-sort',
+                title: 'Radix Sort: Sorting Without Comparisons',
+                content: [
+                    'Radix Sort bypasses the Ω(n log n) lower bound by not performing comparisons. Instead, it sorts digit by digit using a stable counting sort as subroutine.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithm',
+                        content: [
+                            'For n words of length k over an alphabet of size σ:',
+                            '1. Sort by the least significant digit (LSD) using a stable sort.',
+                            '2. Sort by the next digit, preserving the previous order for equal digits.',
+                            '3. Repeat for all k digits.',
+                            'Stability of the inner sort is crucial: it ensures that the previous ordering is preserved for equal values of the current digit.',
+                        ],
+                    },
+                    {
+                        title: 'Complexity',
+                        content: [
+                            '• Time: Θ(k·(n + σ)) — k passes, each costing Θ(n + σ) with counting sort.',
+                            '• Space: Θ(n + σ) auxiliary.',
+                            'When k is constant (fixed-length strings, integers of bounded value), complexity becomes Θ(n) — linear!',
+                            'Radix Sort is extremely efficient for integers, IP addresses, or fixed-length strings, but inapplicable to arbitrary comparison-based problems.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'hybrid-sorts',
+                title: 'Hybrid Sorting Algorithms',
+                content: [
+                    'Real-world sort implementations combine multiple algorithms to exploit the strengths of each.',
+                ],
+                subsections: [
+                    {
+                        title: 'Common Hybrids',
+                        content: [
+                            '• IntroSort: starts with Quick Sort, switches to Heap Sort if recursion depth exceeds 2·log₂(n) (avoiding Quick Sort\'s worst case), and uses Insertion Sort for small partitions (n ≤ 16). Used in C++ std::sort.',
+                            '• TimSort: merges naturally occurring sorted "runs", using Insertion Sort to extend short runs. Achieves Θ(n) on nearly-sorted data, Θ(n log n) in general. Used in Python and Java.',
+                            '• SedgeSort: Quick Sort + Insertion Sort for small sub-arrays.',
+                            'The key insight: no single algorithm dominates in all regimes. Hybrid approaches combine theoretical guarantees with practical efficiency.',
+                        ],
+                    },
+                ],
+                table: {
+                    headers: ['Algorithm', 'Worst case', 'Average', 'Space', 'Notes'],
+                    rows: [
+                        ['IntroSort', 'Θ(n log n)', 'Θ(n log n)', 'Θ(log n)', 'C++ std::sort'],
+                        ['TimSort', 'Θ(n log n)', 'Θ(n log n)', 'Θ(n)', 'Python, Java'],
+                        ['Radix Sort', 'Θ(kn)', 'Θ(kn)', 'Θ(n+σ)', 'Not comparison-based'],
+                        ['Heap Sort', 'Θ(n log n)', 'Θ(n log n)', 'Θ(1)', 'In-place, not stable'],
+                    ],
+                },
+            },
+        ],
+    },
+    {
+        id: 'permutations-geometry',
+        title: 'Permutations, Random Generation, and Geometric Applications',
+        description: 'Structure of permutations, Knuth shuffle, convex hull algorithms, and how sorting unlocks efficient geometry',
+        sections: [
+            {
+                id: 'permutations',
+                title: 'Structure of Permutations',
+                content: [
+                    'A permutation of {1, …, n} is a bijection from this set to itself. Sorting is fundamentally about finding the permutation that maps the input to its sorted order.',
+                ],
+                subsections: [
+                    {
+                        title: 'Transpositions',
+                        content: [
+                            'Any permutation can be decomposed into a product of transpositions (swaps of exactly two elements).',
+                            'This decomposition is the atomic operation behind every swap-based sorting algorithm: each "swap" in Bubble Sort or Selection Sort is a transposition.',
+                            'The parity of the number of transpositions (even or odd) is an invariant of the permutation.',
+                        ],
+                    },
+                    {
+                        title: 'Counting and the Lower Bound Revisited',
+                        content: [
+                            'There are n! permutations of n elements (n choices for position 1, n-1 for position 2, etc.).',
+                            'n! grows super-exponentially: 10! ≈ 3.6 × 10⁶, 20! ≈ 2.4 × 10¹⁸.',
+                            'This counting argument underpins the Ω(n log n) lower bound for sorting.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'knuth-shuffle',
+                title: 'Knuth Shuffle: Uniform Random Permutation',
+                content: [
+                    'Given an array of n elements, how do we generate a uniformly random permutation — each of the n! orderings with equal probability — in linear time?',
+                ],
+                subsections: [
+                    {
+                        title: 'Fisher-Yates / Knuth Algorithm',
+                        content: [
+                            'For i from n-1 down to 1: pick j uniformly at random in {0, …, i}, then swap A[i] and A[j].',
+                            'This simulates a selection sort in reverse: at step i, we choose which element occupies position i among the remaining unsorted ones.',
+                            'Complexity: Θ(n) — exactly n-1 swaps and n-1 random number generations.',
+                        ],
+                    },
+                    {
+                        title: 'Correctness Proof',
+                        content: [
+                            'We prove that every permutation is equally likely. Consider element e ending at position k.',
+                            'At step n-1: probability 1/n that e is placed in position n-1.',
+                            'At step n-2: probability 1/(n-1) that e is placed in position n-2 (given it was not placed at n-1).',
+                            'The probability that e ends at any specific position k is: (product of survival probabilities) × (1/(k+1)) = 1/n.',
+                            'By symmetry, every permutation has probability 1/n!.',
+                        ],
+                    },
+                ],
+                codeExample: {
+                    language: 'python',
+                    caption: 'Knuth Shuffle',
+                    code: `import random
+
+def knuth_shuffle(A):
+    n = len(A)
+    for i in range(n - 1, 0, -1):
+        j = random.randint(0, i)   # j in {0, ..., i}
+        A[i], A[j] = A[j], A[i]
+    return A`,
+                },
+            },
+            {
+                id: 'convex-hull',
+                title: 'Convex Hull: Geometry Meets Sorting',
+                content: [
+                    'The convex hull of a set of points P in the plane is the smallest convex polygon containing all points — the shape you get by stretching a rubber band around all points.',
+                ],
+                subsections: [
+                    {
+                        title: 'Naive Algorithm: O(n³)',
+                        content: [
+                            'An edge (P, Q) belongs to the convex hull if and only if all other points lie on the same side of the directed line PQ.',
+                            'For each of the O(n²) pairs (P, Q), check all n other points: total cost Θ(n³).',
+                            'This is impractical for large point sets.',
+                        ],
+                    },
+                    {
+                        title: 'Graham Scan: Θ(n log n)',
+                        content: [
+                            '1. Find the lowest point p₀ (y-coordinate, break ties by x). Cost: Θ(n).',
+                            '2. Sort the remaining n-1 points by polar angle around p₀. Cost: Θ(n log n) — the dominant step.',
+                            '3. Process points in sorted order, maintaining a stack of hull candidates:',
+                            '   • Push each point; while the last three points make a non-left turn (clockwise or collinear), pop the middle one.',
+                            '4. The stack at the end is the convex hull.',
+                            'The linear sweep (step 3) costs Θ(n) since each point is pushed and popped at most once.',
+                            'Total: Θ(n log n), dominated by the sort.',
+                        ],
+                    },
+                    {
+                        title: 'Why Sorting Unlocks Geometry',
+                        content: [
+                            'The Graham scan illustrates a powerful pattern: a hard geometric problem (O(n³) naïve) becomes tractable (Θ(n log n)) by sorting the data first.',
+                            'Other examples of this pattern:',
+                            '• Closest pair of points: Θ(n log n) with a divide-and-conquer after sorting by x.',
+                            '• Line sweep algorithms for segment intersection: sort events by x-coordinate.',
+                            '• Voronoi diagrams and Delaunay triangulations.',
+                            'Sorting is not just a utility — it is a fundamental algorithmic transformation that reveals structure hidden in disordered data.',
+                        ],
+                    },
+                ],
+                table: {
+                    headers: ['Algorithm', 'Time Complexity', 'Key Step'],
+                    rows: [
+                        ['Naïve Convex Hull', 'Θ(n³)', 'Check all pairs of points'],
+                        ['Graham Scan', 'Θ(n log n)', 'Sort by polar angle + stack sweep'],
+                        ['Jarvis March', 'Θ(nh) — h = hull size', 'Gift-wrapping, output-sensitive'],
+                    ],
+                },
+            },
+        ],
+    },
 ];
 
 export const COURSES_FR: Course[] = [
@@ -854,6 +1303,436 @@ export const COURSES_FR: Course[] = [
                     'La hiérarchie de l\'efficacité est absolue : l\'approche naïve est une impossibilité physique, la programmation dynamique par tableau une impasse spatiale, et la méthode matricielle couplée à l\'exponentiation rapide représente l\'optimum théorique.',
                     'En informatique, la structure algorithmique prime sur la puissance de la machine.',
                 ],
+            },
+        ],
+    },
+    {
+        id: 'search-and-sorting',
+        title: 'Algorithmes de Recherche et Tris par Comparaison',
+        description: 'Recherche séquentielle et dichotomique, puis les quatre algorithmes de tri fondamentaux avec preuves de correction et analyse de complexité',
+        sections: [
+            {
+                id: 'sequential-search',
+                title: 'Recherche Séquentielle',
+                content: [
+                    'Dans une liste non triée, la recherche d\'un élément nécessite d\'examiner chaque entrée une par une. C\'est la stratégie la plus générale mais la moins efficace.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithme et Complexité',
+                        content: [
+                            'On parcourt le tableau de l\'indice 0 à n-1 et on retourne l\'indice dès que la valeur cible est trouvée, ou -1 si elle est absente.',
+                            '• Meilleur cas : Ω(1) — l\'élément est à la position 0.',
+                            '• Pire cas et cas moyen : Θ(n) — l\'élément est absent ou à la fin.',
+                            'Aucun prétraitement des données n\'est requis, ce qui la rend universellement applicable.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'binary-search',
+                title: 'Recherche Dichotomique',
+                content: [
+                    'Si le tableau est trié, on peut exploiter l\'ordre pour éliminer la moitié des candidats à chaque étape — la stratégie "diviser pour régner" appliquée à la recherche.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithme',
+                        content: [
+                            'On maintient deux pointeurs lo et hi. À chaque étape, on calcule mid = (lo + hi) // 2 et on compare array[mid] à la cible.',
+                            '• Si array[mid] == cible : on retourne mid.',
+                            '• Si array[mid] < cible : on cherche dans la moitié droite (lo = mid + 1).',
+                            '• Si array[mid] > cible : on cherche dans la moitié gauche (hi = mid - 1).',
+                            'On s\'arrête quand lo > hi (élément absent).',
+                        ],
+                    },
+                    {
+                        title: 'Complexité et Correction',
+                        content: [
+                            'À chaque étape l\'espace de recherche est divisé par deux. Après k étapes, l\'espace restant est de taille n/2ᵏ. Quand n/2ᵏ < 1, soit k > log₂ n, la recherche se termine.',
+                            'Invariant de terminaison : hi - lo décroît strictement à chaque itération.',
+                            'Complexité : Θ(log n) — exponentiellement plus rapide que la recherche séquentielle sur de grands ensembles de données triés.',
+                            'Note d\'implémentation critique : évitez les copies de sous-tableaux (qui ajouteraient un coût spatial en O(n)) ; travaillez avec des indices sur le tableau d\'origine.',
+                        ],
+                    },
+                    {
+                        title: 'Impact du Tri sur d\'autres Opérations',
+                        content: [
+                            'Un tableau trié permet bien plus qu\'une recherche rapide :',
+                            '• Trouver le maximum : O(1) — c\'est le dernier élément.',
+                            '• Éliminer les doublons : un parcours linéaire Θ(n) suffit au lieu de O(n²).',
+                            '• Compter les occurrences d\'une valeur : dichotomie + parcours linéaire = O(log n + k).',
+                            'Le coût initial du tri (Θ(n log n)) est rapidement amorti lorsque de multiples requêtes sont nécessaires.',
+                        ],
+                    },
+                ],
+                codeExample: {
+                    language: 'python',
+                    caption: 'Implémentation de la Recherche Dichotomique',
+                    code: `def recherche_dichotomique(arr, cible):
+    lo, hi = 0, len(arr) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if arr[mid] == cible:
+            return mid
+        elif arr[mid] < cible:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1  # non trouvé`,
+                },
+            },
+            {
+                id: 'selection-sort',
+                title: 'Tri par Sélection',
+                content: [
+                    'À chaque passage i, on trouve le minimum du suffixe non trié A[i..n-1] et on l\'échange à la position i.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithme et Invariant',
+                        content: [
+                            'Invariant de boucle : après i itérations, A[0..i-1] contient les i plus petits éléments dans l\'ordre.',
+                            'L\'algorithme effectue toujours exactement n(n-1)/2 comparaisons indépendamment de l\'entrée — même sur un tableau déjà trié.',
+                        ],
+                    },
+                    {
+                        title: 'Complexité',
+                        content: [
+                            '• Temps : Θ(n²) dans tous les cas (meilleur, moyen, pire). La boucle interne s\'exécute toujours complètement.',
+                            '• Espace : Θ(1) auxiliaire — tri en place.',
+                            '• Échanges : au plus n-1 (meilleur que le tri à bulles).',
+                            'Simple à implémenter mais dominé par le tri par insertion sur les données presque triées.',
+                        ],
+                    },
+                ],
+                codeExample: {
+                    language: 'python',
+                    caption: 'Tri par Sélection',
+                    code: `def tri_selection(A):
+    n = len(A)
+    for i in range(n - 1):
+        min_idx = i
+        for j in range(i + 1, n):
+            if A[j] < A[min_idx]:
+                min_idx = j
+        A[i], A[min_idx] = A[min_idx], A[i]`,
+                },
+            },
+            {
+                id: 'insertion-sort',
+                title: 'Tri par Insertion',
+                content: [
+                    'Construit le tableau trié un élément à la fois en insérant chaque nouvel élément à sa position correcte parmi ceux déjà triés.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithme et Invariant',
+                        content: [
+                            'Invariant de boucle : après i itérations, A[0..i] est trié.',
+                            'Chaque élément est décalé vers la gauche jusqu\'à trouver sa position correcte.',
+                        ],
+                    },
+                    {
+                        title: 'Complexité',
+                        content: [
+                            '• Meilleur cas : Ω(n) — déjà trié, seulement n-1 comparaisons.',
+                            '• Pire cas : O(n²) — trié à l\'envers, chaque élément est décalé jusqu\'au bout.',
+                            '• Cas moyen : Θ(n²).',
+                            '• Espace : Θ(1) auxiliaire.',
+                            'Excellent pour les petits tableaux ou les données presque triées. Utilisé comme sous-routine dans les tris hybrides (TimSort, IntroSort).',
+                        ],
+                    },
+                ],
+                table: {
+                    headers: ['Algorithme', 'Meilleur', 'Moyen', 'Pire', 'Espace', 'Stable'],
+                    rows: [
+                        ['Tri Sélection', 'Θ(n²)', 'Θ(n²)', 'Θ(n²)', 'Θ(1)', 'Non'],
+                        ['Tri Insertion', 'Θ(n)', 'Θ(n²)', 'Θ(n²)', 'Θ(1)', 'Oui'],
+                        ['Tri Fusion', 'Θ(n log n)', 'Θ(n log n)', 'Θ(n log n)', 'Θ(n)', 'Oui'],
+                        ['Tri Rapide', 'Θ(n log n)', 'Θ(n log n)', 'Θ(n²)', 'Θ(log n)', 'Non'],
+                    ],
+                },
+            },
+            {
+                id: 'merge-sort',
+                title: 'Tri Fusion (Merge Sort)',
+                content: [
+                    'Le Tri Fusion applique le paradigme "diviser pour régner" : on sépare le tableau en deux, on trie chaque moitié récursivement, puis on fusionne les deux moitiés triées.',
+                ],
+                subsections: [
+                    {
+                        title: 'Procédure de Fusion',
+                        content: [
+                            'Étant donné deux tableaux triés L et R, on produit un unique tableau trié en choisissant répétitivement le plus petit élément en tête.',
+                            'Cette fusion coûte Θ(n) en temps et Θ(n) en espace auxiliaire — l\'inconvénient majeur de l\'algorithme.',
+                        ],
+                    },
+                    {
+                        title: 'Complexité par Récurrence',
+                        content: [
+                            'T(n) = 2·T(n/2) + Θ(n). D\'après le théorème maître (cas 2) : T(n) = Θ(n log n).',
+                            'Cette complexité est valable dans tous les cas — le Tri Fusion est asymptotiquement optimal pour le tri par comparaison.',
+                            'Il est stable (les éléments égaux conservent leur ordre relatif) mais pas en place : Θ(n) de mémoire supplémentaire est nécessaire pour l\'étape de fusion.',
+                        ],
+                    },
+                ],
+                codeExample: {
+                    language: 'python',
+                    caption: 'Tri Fusion',
+                    code: `def tri_fusion(A):
+    if len(A) <= 1:
+        return A
+    mid = len(A) // 2
+    L = tri_fusion(A[:mid])
+    R = tri_fusion(A[mid:])
+    return fusion(L, R)
+
+def fusion(L, R):
+    resultat, i, j = [], 0, 0
+    while i < len(L) and j < len(R):
+        if L[i] <= R[j]:
+            resultat.append(L[i]); i += 1
+        else:
+            resultat.append(R[j]); j += 1
+    return resultat + L[i:] + R[j:]`,
+                },
+            },
+            {
+                id: 'quick-sort',
+                title: 'Tri Rapide (Quick Sort)',
+                content: [
+                    'Le Tri Rapide partitionne le tableau autour d\'un pivot, en plaçant les éléments plus petits à sa gauche et les plus grands à sa droite, puis trie récursivement les deux sous-listes.',
+                ],
+                subsections: [
+                    {
+                        title: 'Choix du Pivot et Partitionnement',
+                        content: [
+                            'L\'étape clé est le partitionnement : réarranger A[lo..hi] de sorte que tous les éléments ≤ pivot viennent en premier, puis le pivot, puis les éléments > pivot.',
+                            'Le choix du pivot affecte de manière critique les performances :',
+                            '• Pivot fixe (premier ou dernier) : Θ(n²) sur des données triées/inversées.',
+                            '• Pivot aléatoire : Espérance Θ(n log n) — élimine systématiquement les pires cas.',
+                            '• Médiane de trois : Bonne heuristique en pratique.',
+                        ],
+                    },
+                    {
+                        title: 'Complexité',
+                        content: [
+                            '• Meilleur / moyen : Θ(n log n) — partitions équilibrées.',
+                            '• Pire cas : Θ(n²) — une partition toujours vide (le pivot est le minimum ou maximum).',
+                            '• Espace : Θ(log n) en moyenne (profondeur de la pile d\'appels) ; Θ(n) au pire.',
+                            'Malgré son pire cas, le Tri Rapide est souvent plus rapide en pratique que le Tri Fusion grâce à une meilleure localité de cache et de plus petites constantes.',
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: 'advanced-sorting',
+        title: 'Tris Spécialisés : Sélection, Tri par Base et Algorithmes Hybrides',
+        description: 'QuickSelect pour la recherche de rang, tri non-comparatif (Radix) et la borne théorique inférieure Ω(n log n)',
+        sections: [
+            {
+                id: 'lower-bound',
+                title: 'Borne Inférieure Théorique : Ω(n log n)',
+                content: [
+                    'Peut-on faire mieux que Θ(n log n) pour trier ? La réponse est non — pour les algorithmes basés sur des comparaisons.',
+                ],
+                subsections: [
+                    {
+                        title: 'Argument de l\'Arbre de Décision',
+                        content: [
+                            'Tout algorithme de tri par comparaison peut être modélisé comme un arbre de décision binaire : chaque nœud interne est une comparaison (A[i] ≤ A[j] ?), chaque feuille est une permutation.',
+                            'Il y a n! ordres possibles pour n éléments, l\'arbre doit donc posséder au moins n! feuilles.',
+                            'Un arbre binaire de hauteur h possède au plus 2ʰ feuilles, donc h ≥ log₂(n!).',
+                            'Par l\'approximation de Stirling : log₂(n!) ≈ n log₂ n - n log₂ e = Θ(n log n).',
+                            'Par conséquent, tout algorithme de tri par comparaison requiert au moins Ω(n log n) comparaisons dans le pire cas. Le tri fusion l\'atteint — il est donc optimal.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'quickselect',
+                title: 'QuickSelect : Médiane et Élément de rang k',
+                content: [
+                    'Trouver la médiane (ou l\'élément de rang k) ne nécessite pas de trier tout le tableau. QuickSelect, une variante du Tri Rapide, permet d\'y parvenir en espérance de Θ(n).',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithme',
+                        content: [
+                            'Après avoir partitionné autour d\'un pivot p qui tombe à la position q :',
+                            '• Si k == q : le pivot est le k-ième plus petit — on le retourne.',
+                            '• Si k < q : on relance récursivement uniquement sur la partie gauche.',
+                            '• Si k > q : on relance récursivement uniquement sur la partie droite.',
+                            'Contrairement au Tri Rapide, UN SEUL appel récursif est effectué par étape.',
+                        ],
+                    },
+                    {
+                        title: 'Complexité',
+                        content: [
+                            '• Moyenne : Θ(n) avec un pivot aléatoire — la récurrence T(n) = T(n/2) + Θ(n) donne Θ(n).',
+                            '• Pire cas : Θ(n²) — comme le Tri Rapide avec un très mauvais pivot.',
+                            'Il existe un algorithme déterministe (médiane des médianes) garantissant Θ(n) dans le pire cas, mais avec des constantes trop lourdes en pratique.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'radix-sort',
+                title: 'Tri par Base (Radix Sort) : Trier sans Comparer',
+                content: [
+                    'Le Tri par Base contourne la borne Ω(n log n) car ce n\'est pas un tri par comparaison. Il trie symbole par symbole en utilisant un tri comptage stable.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithme',
+                        content: [
+                            'Pour n mots de longueur k sur un alphabet de taille σ :',
+                            '1. Trier selon le symbole du poids faible au poids fort (LSD) avec un tri stable.',
+                            '2. Trier par le chiffre suivant, en préservant l\'ordre précédent pour les éléments égaux.',
+                            '3. Répéter pour les k symboles.',
+                            'La stabilité du sous-tri est vitale : elle garantit que les égalités sur le chiffre actuel sont départagées selon l\'ordre des chiffres inférieurs.',
+                        ],
+                    },
+                    {
+                        title: 'Complexité',
+                        content: [
+                            '• Temps : Θ(k·(n + σ)) — k passes de coût Θ(n + σ) chacune.',
+                            '• Espace : Θ(n + σ) auxiliaire.',
+                            'Si k est constant (ex: entiers 32-bits = 4 octets), la complexité tombe à Θ(n) — l\'algorithme est linéaire !',
+                            'Très efficace pour les adresses IP ou les chaînes de taille fixe, mais inutilisable sur des objets génériques ne pouvant être décomposés en base.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'hybrid-sorts',
+                title: 'Généralisation : Tris Hybrides',
+                content: [
+                    'Les implémentations réelles des langages de programmation combinent plusieurs algorithmes pour tirer parti des forces de chacun.',
+                ],
+                subsections: [
+                    {
+                        title: 'Exemples Concrets',
+                        content: [
+                            '• IntroSort : Démarrage avec Quick Sort, bascule vers Heap Sort si la récursion dépasse 2·log₂(n) (pour esquiver le pire cas du QS), et utilise le Tri par Insertion pour les tous petits tableaux (n ≤ 16). Utilisé dans std::sort en C++.',
+                            '• TimSort : Repère les séquences déjà triées ("runs") et les fusionne (inspiré du Tri Fusion), tout en utilisant l\'Insertion pour lisser de courtes séquences non-triées. Atteint Θ(n) sur des données semi-triées, et Θ(n log n) au pire. Utilisé en Python et Java.',
+                            'L\'idée maîtresse : Aucun algorithme n\'est parfait partout. L\'hybridation concilie garanties théoriques et efficacité empirique.',
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: 'permutations-geometry',
+        title: 'Permutations, Génération Aléatoire et Géométrie',
+        description: 'Structure des permutations, mélange de Knuth et applications des tris à des problèmes de géométrie algorithmique',
+        sections: [
+            {
+                id: 'permutations',
+                title: 'La Structure des Permutations',
+                content: [
+                    'Une permutation sur {1, …, n} est une bijection de cet ensemble vers lui-même. Trier revient fondamentalement à trouver la permutation inverse qui remet les éléments dans l\'ordre.',
+                ],
+                subsections: [
+                    {
+                        title: 'Transpositions',
+                        content: [
+                            'Toute permutation se décompose en un produit de transpositions (échanges de deux éléments).',
+                            'C\'est l\'opération atomique au cœur de tous les tris sur place (Bulle, Sélection) : chaque "swap" dans le code correspond à une transposition.',
+                        ],
+                    },
+                    {
+                        title: 'Dénombrement et Borne Inférieure',
+                        content: [
+                            'Il existe n! permutations possibles sur un ensemble de n éléments.',
+                            'Cette factorielle explose extrêmement vite (super-exponentiel). C\'est l\'existence de ces n! trajectoires possibles qui justifie la borne de complexité Ω(n log n) pour retrouver une unique solution ciblée par dichotomies successives.',
+                        ],
+                    },
+                ],
+            },
+            {
+                id: 'knuth-shuffle',
+                title: 'Mélange de Knuth : Génération Aléatoire Uniforme',
+                content: [
+                    'Étant donné un tableau ordonné, comment générer une permutation aléatoire uniforme (chacune des n! possibilités étant équiprobable) en un temps linéaire ?',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithme de Fisher-Yates (Knuth)',
+                        content: [
+                            'Pour i allant de n-1 jusqu\'à 1 : choisir un entier j aléatoire dans {0, …, i}, et échanger A[i] avec A[j].',
+                            'Cet algorithme "mime" à l\'envers un tri par sélection : on fixe aléatoirement qui se trouve tout à droite parmi les candidats restants, et ainsi de suite.',
+                            'Complexité : Θ(n) — exactement n-1 échanges et appels au générateur aléatoire.',
+                        ],
+                    },
+                    {
+                        title: 'Preuve d\'Équiprobabilité',
+                        content: [
+                            'Démontrons que tout élément a 1/n chance de finir à n\'importe quelle position k.',
+                            'À l\'étape n-1 : l\'élément A[x] a 1/n chance d\'être placé en dernière position.',
+                            'À l\'étape n-2 : il lui restait (n-1)/n chance de survivre au premier tour, et 1/(n-1) chance d\'être pioché au second : (n-1)/n × 1/(n-1) = 1/n.',
+                            'L\'équité se maintient de proche en proche : chaque trajectoire possède la probabilité exacte 1/n!.',
+                        ],
+                    },
+                ],
+                codeExample: {
+                    language: 'python',
+                    caption: 'Mélange de Knuth',
+                    code: `import random
+
+def knuth_shuffle(A):
+    n = len(A)
+    for i in range(n - 1, 0, -1):
+        j = random.randint(0, i)   # j dans {0, ..., i}
+        A[i], A[j] = A[j], A[i]
+    return A`,
+                },
+            },
+            {
+                id: 'convex-hull',
+                title: 'Enveloppe Convexe : Géométrie et Tri',
+                content: [
+                    'L\'enveloppe convexe d\'un nuage de points correspond au plus petit contour convexe englobant tous les points.',
+                ],
+                subsections: [
+                    {
+                        title: 'Algorithme Naïf : O(n³)',
+                        content: [
+                            'Pour vérifier qu\'un segment composé de deux points (A, B) appartient à l\'enveloppe, il faut s\'assurer que les n-2 autres points se trouvent tous du même côté de la droite (AB).',
+                            'Il y a O(n²) paires de points, chacune nécessitant de tester O(n) points. Le coût total est Θ(n³). Impensable pour un grand dataset.',
+                        ],
+                    },
+                    {
+                        title: 'Parcours de Graham (Graham Scan) : Θ(n log n)',
+                        content: [
+                            '1. Trouver le point le plus bas p₀ (coordonnée Y minimum).',
+                            '2. Trier les n-1 autres points selon l\'angle polaire par rapport à p₀. (L\'étape de tri coûte Θ(n log n)).',
+                            '3. Empiler (push) les points un par un. Si les 3 derniers points empilés font un "virage à droite" (concavité), on dépile (pop) le pointeur du milieu, car il ne fait pas partie de l\'enveloppe.',
+                            '4. La pile finale contient l\'enveloppe convexe.',
+                            'L\'étape d\'empilement coûte Θ(n) : un point est empilé une fois, dépilé au plus une fois.',
+                            'Le coût total de ce "balayage" est Θ(n log n).',
+                        ],
+                    },
+                    {
+                        title: 'Pourquoi le Tri débloque la Géométrie',
+                        content: [
+                            'Le parcours de Graham illustre un secret fondamental de l\'algorithmique : un problème difficile (O(n³)) devient facile à traiter (balayage linéaire) EN TRIANT préalablement les éléments.',
+                            'Le tri exploite l\'ordre imposé par les coordonnées ou les angles pour ne traiter des interactions qu\'avec le strict voisinage local, réduisant considérablement l\'espace de recherche.',
+                        ],
+                    },
+                ],
+                table: {
+                    headers: ['Algorithme', 'Complexité', 'Description / Goulot d\'étranglement'],
+                    rows: [
+                        ['Naïf', 'Θ(n³)', 'Vérification de toutes les paires contre tous les autres points'],
+                        ['Parcours de Graham', 'Θ(n log n)', 'Tri d\'angle polaire (goulot direct) puis balayage avec pile en Θ(n)'],
+                        ['Marche de Jarvis', 'Θ(h·n) où h = taille d\'env.', 'Emballage de cadeaux (pseudo-tri sélection angulaire)'],
+                    ],
+                },
             },
         ],
     },

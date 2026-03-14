@@ -9,6 +9,7 @@ export const en: Translations = {
         complexity: 'Complexity Overview',
         mockExams: 'Mock Exams',
         audit: 'Code Audit',
+        scenarios: 'Array Scenarios',
     },
     common: {
         settings: 'Settings',
@@ -130,7 +131,9 @@ export const en: Translations = {
         dynamicProgramming: 'Dynamic Programming',
         trees: 'Trees',
         linkedLists: 'Linked Lists',
-        comparison: 'Comparison'
+        comparison: 'Comparison',
+        maths: 'Mathematics',
+        geometry: 'Geometry'
     },
     complexity: {
         title: 'Complexity Comparison',

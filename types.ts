@@ -1,10 +1,10 @@
 
-export type Complexity = 'O(1)' | 'O(log n)' | 'O(n)' | 'O(n log n)' | 'O(n²)' | 'O(2ⁿ)' | 'O(n!)';
+export type Complexity = 'O(1)' | 'O(log n)' | 'O(n)' | 'O(n log n)' | 'O(n²)' | 'O(2ⁿ)' | 'O(n!)' | 'O(n h)' | 'O(h)';
 
 export interface Algorithm {
   id: string;
   name: string;
-  category: 'Sorting' | 'Searching' | 'Graphs' | 'Dynamic Programming' | 'Trees' | 'LinkedLists';
+  category: 'Sorting' | 'Searching' | 'Graphs' | 'Dynamic Programming' | 'Trees' | 'LinkedLists' | 'Maths' | 'Geometry';
   description: string;
   timeComplexity: {
     best: Complexity;
@@ -29,8 +29,6 @@ export interface QuizQuestion {
   explanation: string;
   category: string;
 }
-
-
 
 export interface TreeNode {
   value: number;
@@ -58,6 +56,22 @@ export interface LinkedListNode {
   label?: string; // e.g., "Head", "Tail", "Prev", "Next", "Curr"
 }
 
+export interface Point2D {
+  id: string;
+  x: number;
+  y: number;
+  isHull?: boolean;
+  isChecking?: boolean;
+  isPivot?: boolean;
+}
+
+export interface MathState {
+  base: number;
+  exp: number;
+  result: number;
+  binaryExp?: string;
+}
+
 export interface VizStep {
   array: number[];
   comparing: number[];
@@ -71,6 +85,9 @@ export interface VizStep {
   };
   tree?: TreeNode; // For Tree algorithms
   linkedList?: LinkedListNode; // For Linked List algorithms (Head node)
+  points?: Point2D[]; // For Geometry
+  hull?: Point2D[]; // Current hull for Graham Scan
+  mathState?: MathState; // For maths like exponentiation
 }
 
 export interface CourseSection {

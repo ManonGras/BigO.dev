@@ -7,6 +7,7 @@ export interface Translations {
         complexity: string;
         mockExams: string;
         audit: string;
+        scenarios: string;
     };
     common: {
         settings: string;
@@ -129,6 +130,8 @@ export interface Translations {
         trees: string;
         linkedLists: string;
         comparison: string;
+        maths: string;
+        geometry: string;
     };
     complexity: {
         title: string;
