@@ -167,4 +167,28 @@ export const en: Translations = {
         nextAudit: 'Next Exercise',
         resetAudit: 'Reset',
     },
+    mockExams: {
+        title: 'Exam Preparation',
+        exercise: 'Exercise {0}',
+        statement: 'Statement',
+        solution: 'Solution',
+        complexity: 'Complexity',
+        showSolution: 'Show Solution',
+        hideSolution: 'Hide Solution',
+    },
+    courses: {
+        selectCourse: 'Select a Course',
+        sections: 'Sections',
+        backToCourses: 'Back to Courses',
+    },
+    audit: {
+        title: 'Code Audit',
+        description: 'Analyze the code and click on the lines that determine the time complexity.',
+        linesSelected: '{0} line(s) selected',
+        correct: 'Correct!',
+        incorrect: 'Not quite. Check the highlighted lines.',
+        checkAudit: 'Check Selection',
+        nextAudit: 'Next Exercise',
+        resetAudit: 'Reset',
+    },
 };

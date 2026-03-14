@@ -168,4 +168,28 @@ export const fr: Translations = {
         nextAudit: 'Exercice Suivant',
         resetAudit: 'Réinitialiser',
     },
+    mockExams: {
+        title: 'Préparation aux Examens',
+        exercise: 'Exercice {0}',
+        statement: 'Énoncé',
+        solution: 'Correction',
+        complexity: 'Complexité',
+        showSolution: 'Afficher la correction',
+        hideSolution: 'Masquer la correction',
+    },
+    courses: {
+        selectCourse: 'Sélectionner un Cours',
+        sections: 'Sections',
+        backToCourses: 'Retour aux Cours',
+    },
+    audit: {
+        title: 'Audit de Code',
+        description: 'Analysez le code et cliquez sur les lignes qui déterminent la complexité temporelle.',
+        linesSelected: '{0} ligne(s) sélectionnée(s)',
+        correct: 'Correct !',
+        incorrect: 'Pas tout à fait. Vérifiez les lignes surlignées.',
+        checkAudit: 'Vérifier la sélection',
+        nextAudit: 'Exercice Suivant',
+        resetAudit: 'Réinitialiser',
+    },
 };
