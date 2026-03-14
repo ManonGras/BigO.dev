@@ -1162,3 +1162,314 @@ export const generateSinglyLinkedListDeleteSteps = (inputArray: number[], t: Tra
 
     return steps;
 };
+
+export const generateBinaryExponentiationSteps = (data: number[], t: Translations, targetValue?: number): VizStep[] => {
+    const steps: VizStep[] = [];
+    const base = Math.floor(Math.random() * 5) + 2; 
+    const expValue = data.length > 5 ? data.length : 13; // use data length as exponent or default 13
+    
+    let exp = expValue;
+    let b = base;
+    let res = 1;
+
+    let comparisons = 0;
+    let swaps = 0; // represent multiplications
+
+    steps.push({
+        array: [],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        currentLine: 0,
+        message: `Calculating ${base}^${expValue}`,
+        stats: { comparisons, swaps },
+        mathState: { base: b, exp, result: res, binaryExp: exp.toString(2) }
+    });
+
+    while (exp > 0) {
+        comparisons++;
+        steps.push({
+            array: [],
+            comparing: [],
+            swapping: [],
+            sorted: [],
+            currentLine: 3,
+            message: `Checking if exp (${exp}) is odd...`,
+            stats: { comparisons, swaps },
+            mathState: { base: b, exp, result: res, binaryExp: exp.toString(2) }
+        });
+
+        if (exp % 2 === 1) {
+            swaps++;
+            res = res * b;
+            steps.push({
+                array: [],
+                comparing: [],
+                swapping: [],
+                sorted: [],
+                currentLine: 5,
+                message: `exp is odd! Multiplying result by ${b}. New result: ${res}`,
+                stats: { comparisons, swaps },
+                mathState: { base: b, exp, result: res, binaryExp: exp.toString(2) }
+            });
+        }
+
+        swaps++;
+        b = b * b;
+        steps.push({
+            array: [],
+            comparing: [],
+            swapping: [],
+            sorted: [],
+            currentLine: 6,
+            message: `Squaring base. New base: ${b}`,
+            stats: { comparisons, swaps },
+            mathState: { base: b, exp, result: res, binaryExp: exp.toString(2) }
+        });
+
+        exp = Math.floor(exp / 2);
+        steps.push({
+            array: [],
+            comparing: [],
+            swapping: [],
+            sorted: [],
+            currentLine: 7,
+            message: `Dividing exp by 2. New exp: ${exp}`,
+            stats: { comparisons, swaps },
+            mathState: { base: b, exp, result: res, binaryExp: exp.toString(2) }
+        });
+    }
+
+    steps.push({
+        array: [],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        currentLine: 8,
+        message: `Done! Final result: ${res}`,
+        stats: { comparisons, swaps },
+        mathState: { base: b, exp, result: res, binaryExp: exp.toString(2) }
+    });
+
+    return steps;
+};
+
+export const generateGrahamScanSteps = (data: number[], t: Translations): VizStep[] => {
+    const steps: VizStep[] = [];
+    const n = Math.max(5, data.length);
+    
+    // Generate random points somewhat around center
+    let points = Array.from({ length: n }, (_, i) => ({
+        id: i.toString(),
+        x: Math.floor(Math.random() * 80) + 10,
+        y: Math.floor(Math.random() * 80) + 10
+    }));
+
+    let comparisons = 0;
+    let swaps = 0;
+
+    steps.push({
+        array: [], comparing: [], swapping: [], sorted: [], currentLine: 0,
+        message: "Generated random points",
+        stats: { comparisons, swaps },
+        points: [...points],
+        hull: []
+    });
+
+    // Find lowest y
+    let p0 = points.reduce((min, p) => p.y < min.y || (p.y === min.y && p.x < min.x) ? p : min, points[0]);
+    comparisons += n;
+
+    steps.push({
+        array: [], comparing: [], swapping: [], sorted: [], currentLine: 1,
+        message: `Found lowest point p0 = (${p0.x}, ${p0.y})`,
+        stats: { comparisons, swaps },
+        points: points.map(p => p.id === p0.id ? { ...p, isPivot: true } : p),
+        hull: []
+    });
+
+    const polarAngle = (p1: typeof p0, p2: typeof p0) => Math.atan2(p2.y - p1.y, p2.x - p1.x);
+    const ccw = (p1: typeof p0, p2: typeof p0, p3: typeof p0) => 
+        (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+
+    points.sort((a, b) => {
+        if (a.id === p0.id) return -1;
+        if (b.id === p0.id) return 1;
+        let diff = polarAngle(p0, a) - polarAngle(p0, b);
+        // if collinear, closest first
+        if (Math.abs(diff) < 0.0001) {
+            const d1 = (a.x - p0.x)**2 + (a.y - p0.y)**2;
+            const d2 = (b.x - p0.x)**2 + (b.y - p0.y)**2;
+            return d1 <= d2 ? -1 : 1;
+        }
+        return diff;
+    });
+
+    // remove collinear points from sorted array if needed (simplified)
+    const sortedPoints = [...points];
+
+    steps.push({
+        array: [], comparing: [], swapping: [], sorted: [], currentLine: 2,
+        message: "Sorted points by polar angle with p0",
+        stats: { comparisons, swaps },
+        points: sortedPoints.map(p => p.id === p0.id ? { ...p, isPivot: true } : p),
+        hull: []
+    });
+
+    let stack = [sortedPoints[0], sortedPoints[1], sortedPoints[2]];
+
+    steps.push({
+        array: [], comparing: [], swapping: [], sorted: [], currentLine: 4,
+        message: "Push first 3 points to stack",
+        stats: { comparisons, swaps },
+        points: sortedPoints.map(p => p.id === p0.id ? { ...p, isPivot: true } : p),
+        hull: [...stack]
+    });
+
+    for (let i = 3; i < sortedPoints.length; i++) {
+        let p = sortedPoints[i];
+
+        steps.push({
+            array: [], comparing: [], swapping: [], sorted: [], currentLine: 6,
+            message: "Checking point next",
+            stats: { comparisons, swaps },
+            points: sortedPoints.map(pt => pt.id === p0.id ? { ...pt, isPivot: true } : (pt.id === p.id ? {...pt, isChecking: true} : pt)),
+            hull: [...stack, p] // visualize attempt
+        });
+        
+        comparisons++;
+        while (stack.length > 1 && ccw(stack[stack.length - 2], stack[stack.length - 1], p) <= 0) {
+            swaps++;
+            stack.pop();
+            
+            steps.push({
+                array: [], comparing: [], swapping: [], sorted: [], currentLine: 7,
+                message: "Not counter-clockwise. Popping from stack.",
+                stats: { comparisons, swaps },
+                points: sortedPoints.map(pt => pt.id === p0.id ? { ...pt, isPivot: true } : (pt.id === p.id ? {...pt, isChecking: true} : pt)),
+                hull: [...stack, p] // visualize current stack with attempt
+            });
+            comparisons++;
+        }
+        stack.push(p);
+        
+        steps.push({
+            array: [], comparing: [], swapping: [], sorted: [], currentLine: 8,
+            message: "Counter-clockwise turn. Pushed to stack.",
+            stats: { comparisons, swaps },
+            points: sortedPoints.map(pt => pt.id === p0.id ? { ...pt, isPivot: true } : pt),
+            hull: [...stack]
+        });
+    }
+
+    steps.push({
+        array: [], comparing: [], swapping: [], sorted: [], currentLine: 9,
+        message: "Convex Hull Completed!",
+        stats: { comparisons, swaps },
+        points: sortedPoints.map(p => {
+            const inHull = stack.find(hp => hp.id === p.id);
+            return inHull ? { ...p, isHull: true } : p;
+        }),
+        hull: [...stack, stack[0]] // close the hull visually
+    });
+
+    return steps;
+};
+
+export const generateJarvisMarchSteps = (data: number[], t: Translations): VizStep[] => {
+    const steps: VizStep[] = [];
+    const n = Math.max(5, data.length);
+    
+    // Generate random points somewhat around center
+    let points = Array.from({ length: n }, (_, i) => ({
+        id: i.toString(),
+        x: Math.floor(Math.random() * 80) + 10,
+        y: Math.floor(Math.random() * 80) + 10
+    }));
+
+    let comparisons = 0;
+    let swaps = 0; // Number of "wrapping" updates
+
+    steps.push({
+        array: [], comparing: [], swapping: [], sorted: [], currentLine: 0,
+        message: "Generated random points",
+        stats: { comparisons, swaps },
+        points: [...points],
+        hull: []
+    });
+
+    // Find leftmost point p0
+    let p0 = points.reduce((min, p) => p.x < min.x ? p : min, points[0]);
+    comparisons += n;
+
+    steps.push({
+        array: [], comparing: [], swapping: [], sorted: [], currentLine: 1,
+        message: `Found leftmost point p0 = (${p0.x}, ${p0.y})`,
+        stats: { comparisons, swaps },
+        points: points.map(p => p.id === p0.id ? { ...p, isPivot: true } : p),
+        hull: []
+    });
+
+    const ccw = (p1: typeof p0, p2: typeof p0, p3: typeof p0) => 
+        (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+
+    let hull: typeof points = [];
+    let p = p0;
+    let q: typeof p0;
+
+    let stepCount = 0;
+
+    do {
+        hull.push(p);
+        
+        steps.push({
+            array: [], comparing: [], swapping: [], sorted: [], currentLine: 4,
+            message: `Added point (${p.x}, ${p.y}) to hull`,
+            stats: { comparisons, swaps },
+            points: points.map(pt => pt.id === p.id ? { ...pt, isPivot: true } : pt),
+            hull: [...hull]
+        });
+
+        q = points[0];
+
+        for (let i = 1; i < n; i++) {
+            steps.push({
+                array: [], comparing: [], swapping: [], sorted: [], currentLine: 7,
+                message: "Checking orientation with next candidate",
+                stats: { comparisons, swaps },
+                points: points.map(pt => pt.id === p.id ? { ...pt, isPivot: true } : (pt.id === points[i].id ? {...pt, isChecking: true} : pt)),
+                hull: [...hull, q, points[i]] // Show lines to q and candidate
+            });
+            
+            comparisons++;
+            if (q.id === p.id || ccw(p, points[i], q) > 0) {
+                swaps++;
+                q = points[i];
+                steps.push({
+                    array: [], comparing: [], swapping: [], sorted: [], currentLine: 8,
+                    message: `Found a more counter-clockwise point: (${q.x}, ${q.y})`,
+                    stats: { comparisons, swaps },
+                    points: points.map(pt => pt.id === p.id ? { ...pt, isPivot: true } : pt),
+                    hull: [...hull, q] // Show line to new q
+                });
+            }
+        }
+        p = q;
+        stepCount++;
+        if(stepCount > n) break; // safegaurd against collinear loops
+
+    } while (p.id !== p0.id);
+
+    steps.push({
+        array: [], comparing: [], swapping: [], sorted: [], currentLine: 11,
+        message: "Jarvis March Completed!",
+        stats: { comparisons, swaps },
+        points: points.map(pt => {
+            const inHull = hull.find(hp => hp.id === pt.id);
+            return inHull ? { ...pt, isHull: true } : pt;
+        }),
+        hull: [...hull, hull[0]] // close the hull visually
+    });
+
+    return steps;
+};

@@ -12,18 +12,22 @@ const ComplexityOverview: React.FC = () => {
     const algos = language === 'en' ? ALGORITHMS : ALGORITHMS_FR;
 
     const getTimeColor = (complexity: string) => {
-        if (complexity.includes('n²')) return 'text-rose-400 font-semibold';
-        if (complexity.includes('n log n')) return 'text-amber-400 font-medium';
-        if (complexity.includes('log n')) return 'text-emerald-400 font-medium';
-        if (complexity === 'O(n)') return 'text-indigo-400';
-        if (complexity === 'O(1)') return 'text-sky-400 font-bold';
+        const lower = complexity.toLowerCase();
+        if (lower.includes('n²')) return 'text-rose-400 font-semibold';
+        if (lower.includes('n log n')) return 'text-amber-400 font-medium';
+        if (lower.includes('n h') || lower.includes('nh')) return 'text-orange-400 font-medium';
+        if (lower.includes('n log k')) return 'text-indigo-400 font-medium';
+        if (lower.includes('log n')) return 'text-emerald-400 font-medium';
+        if (complexity === 'O(n)') return 'text-sky-400';
+        if (complexity === 'O(1)') return 'text-emerald-500 font-bold';
         return 'text-slate-300';
     };
 
     const getSpaceColor = (complexity: string) => {
-        if (complexity === 'O(1)') return 'text-sky-400 font-bold';
+        if (complexity === 'O(1)') return 'text-emerald-500 font-bold';
         if (complexity === 'O(n)') return 'text-rose-400 font-medium';
         if (complexity.includes('log n')) return 'text-amber-400 font-medium';
+        if (complexity.includes('h')) return 'text-sky-400 font-medium';
         return 'text-slate-300';
     };
 

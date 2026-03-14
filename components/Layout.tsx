@@ -14,7 +14,9 @@ import {
   Palette as PaletteIcon,
   GraduationCap,
   FileText,
-  ScanSearch
+  ScanSearch,
+  ChevronRight,
+  Layers
 } from 'lucide-react';
 
 import { useLanguage } from '../contexts/LanguageContext';
@@ -22,8 +24,8 @@ import { useTheme, PALETTES } from '../contexts/ThemeContext';
 
 interface LayoutProps {
   children: React.ReactNode;
-  activeTab: 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams' | 'audit';
-  onTabChange: (tab: 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams' | 'audit') => void;
+  activeTab: 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams' | 'audit' | 'scenarios';
+  onTabChange: (tab: 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams' | 'audit' | 'scenarios') => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => {
@@ -33,14 +35,17 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
   const { currentPalette, setPalette } = useTheme();
 
   const menuItems = [
-    { id: 'visualizer', label: t.menu.visualizer, icon: Activity },
-    { id: 'sheets', label: t.menu.sheets, icon: FileText },
-    { id: 'courses', label: t.menu.courses, icon: BookOpen },
-    { id: 'quiz', label: t.menu.quiz, icon: BrainCircuit },
-    { id: 'complexity', label: t.menu.complexity, icon: TableProperties },
-    { id: 'mockExams', label: t.menu.mockExams, icon: GraduationCap },
-    { id: 'audit', label: t.menu.audit, icon: ScanSearch },
+    { id: 'visualizer', label: t.menu.visualizer, icon: Activity, description: language === 'fr' ? 'Visualiser les algorithmes' : 'Watch algorithms run' },
+    { id: 'sheets', label: t.menu.sheets, icon: FileText, description: language === 'fr' ? 'Fiches de révision' : 'Quick reference cards' },
+    { id: 'courses', label: t.menu.courses, icon: BookOpen, description: language === 'fr' ? 'Cours et théorie' : 'Lessons and theory' },
+    { id: 'quiz', label: t.menu.quiz, icon: BrainCircuit, description: language === 'fr' ? 'Quiz interactifs' : 'Test your knowledge' },
+    { id: 'complexity', label: t.menu.complexity, icon: TableProperties, description: language === 'fr' ? 'Tableaux de complexités' : 'Complexity cheat sheet' },
+    { id: 'mockExams', label: t.menu.mockExams, icon: GraduationCap, description: language === 'fr' ? 'Préparer l\'examen' : 'Exam preparation' },
+    { id: 'audit', label: t.menu.audit, icon: ScanSearch, description: language === 'fr' ? 'Analyser du code' : 'Analyze code complexity' },
+    { id: 'scenarios', label: t.menu.scenarios, icon: Layers, description: language === 'fr' ? 'Types de tableaux et optimisations' : 'Array types and optimizations' },
   ];
+
+  const activeItem = menuItems.find(i => i.id === activeTab);
 
   return (
     <div
@@ -49,96 +54,141 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
     >
       {/* Sidebar */}
       <aside className={`
-        ${isSidebarOpen ? 'w-64' : 'w-20'} 
-        flex flex-col transition-all duration-300 ease-in-out z-50 border-r
+        ${isSidebarOpen ? 'w-60' : 'w-[72px]'} 
+        flex flex-col transition-all duration-300 ease-in-out z-50 border-r shrink-0
       `}
         style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}
       >
-        <div className="p-6 flex items-center gap-3 border-b" style={{ borderColor: 'var(--border)' }}>
-          <div className="p-2 rounded-lg shadow-lg" style={{ backgroundColor: 'var(--accent)' }}>
-            <LayoutDashboard size={24} className="text-white" />
+        {/* Logo + Toggle on same line */}
+        <div className="h-16 px-4 flex items-center justify-between border-b shrink-0" style={{ borderColor: 'var(--border)' }}>
+          <div className="flex items-center gap-3 overflow-hidden">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-lg" style={{ backgroundColor: 'var(--accent)' }}>
+              <LayoutDashboard size={16} className="text-white" />
+            </div>
+            {isSidebarOpen && (
+              <span className="font-bold text-base tracking-tight whitespace-nowrap" style={{ color: 'var(--text-primary)' }}>
+                BigO.dev
+              </span>
+            )}
           </div>
-          {isSidebarOpen && <span className="font-bold text-xl tracking-tight">BigO.dev</span>}
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-1.5 rounded-lg transition-colors hover:bg-black/20 shrink-0"
+            style={{ color: 'var(--text-secondary)' }}
+            title={isSidebarOpen ? t.common.collapse : 'Ouvrir le menu'}
+          >
+            <Menu size={18} />
+          </button>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-2 overflow-y-auto">
+        {/* Nav Items */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto overflow-x-hidden">
           {menuItems.map((item) => (
             <button
               key={item.id}
               onClick={() => onTabChange(item.id as any)}
+              title={!isSidebarOpen ? item.label : undefined}
               className={`
-                w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all font-medium
+                w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-sm font-medium group relative
                 ${activeTab === item.id
-                  ? 'text-white shadow-lg'
-                  : 'hover:text-white'}
+                  ? 'text-white shadow-md'
+                  : 'hover:bg-white/5'}
               `}
               style={{
                 backgroundColor: activeTab === item.id ? 'var(--accent)' : 'transparent',
                 color: activeTab === item.id ? '#fff' : 'var(--text-secondary)',
-                boxShadow: activeTab === item.id ? `0 10px 15px -3px ${currentPalette.colors.accent}44` : 'none'
               }}
             >
-              <item.icon size={20} />
-              {isSidebarOpen && <span>{item.label}</span>}
+              <item.icon size={18} className="shrink-0" />
+              {isSidebarOpen && (
+                <span className="truncate">{item.label}</span>
+              )}
+              {/* Active indicator */}
+              {activeTab === item.id && !isSidebarOpen && (
+                <span
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-l-full"
+                  style={{ backgroundColor: 'var(--accent)' }}
+                />
+              )}
             </button>
           ))}
         </nav>
 
-        <div className="p-4 border-t space-y-2" style={{ borderColor: 'var(--border)' }}>
+        {/* Bottom actions */}
+        <div className="px-3 py-4 border-t space-y-1 shrink-0" style={{ borderColor: 'var(--border)' }}>
           <button
             onClick={() => setIsSettingsOpen(true)}
-            className="w-full flex items-center gap-4 px-4 py-2 transition-colors hover:text-white"
+            title={!isSidebarOpen ? t.common.settings : undefined}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-white/5 text-sm font-medium"
             style={{ color: 'var(--text-secondary)' }}
           >
-            <Settings size={20} />
-            {isSidebarOpen && <span>{t.common.settings}</span>}
-          </button>
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="w-full flex items-center gap-4 px-4 py-2 transition-colors hover:text-white"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-            {isSidebarOpen && <span>{t.common.collapse}</span>}
+            <Settings size={18} className="shrink-0" />
+            {isSidebarOpen && <span className="truncate">{t.common.settings}</span>}
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full relative overflow-hidden">
+      <main className="flex-1 flex flex-col h-full relative overflow-hidden min-w-0">
         {/* Header */}
         <header
-          className="h-16 border-b backdrop-blur-md flex items-center justify-between px-8 z-10"
+          className="h-16 border-b backdrop-blur-md flex items-center justify-between px-6 z-10 shrink-0"
           style={{ backgroundColor: `${currentPalette.colors.bgSecondary}cc`, borderColor: 'var(--border)' }}
         >
-          <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-            {menuItems.find(i => i.id === activeTab)?.label}
-          </h2>
-          <div className="flex items-center gap-4">
-            <img
-              className="w-9 h-9 rounded-full border-2"
-              style={{ borderColor: `${currentPalette.colors.accent}88` }}
-              src="https://avatars.githubusercontent.com/u/193535234?v=4"
-              alt="User Avatar"
-            />
+          {/* Page title + breadcrumb */}
+          <div className="flex items-center gap-3 min-w-0">
+            {activeItem && (
+              <>
+                <div className="p-1.5 rounded-lg" style={{ backgroundColor: `${currentPalette.colors.accent}20` }}>
+                  <activeItem.icon size={16} style={{ color: 'var(--accent)' }} />
+                </div>
+                <div className="min-w-0">
+                  <h1 className="text-sm font-bold leading-none truncate" style={{ color: 'var(--text-primary)' }}>
+                    {activeItem.label}
+                  </h1>
+                  <p className="text-xs mt-0.5 truncate hidden sm:block" style={{ color: 'var(--text-secondary)' }}>
+                    {activeItem.description}
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Right actions */}
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')}
-              className="flex items-center gap-2 px-2 py-1 rounded hover:opacity-80 transition-opacity"
-              style={{ color: 'var(--text-secondary)', backgroundColor: 'var(--bg-primary)' }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:bg-white/5"
+              style={{ color: 'var(--text-secondary)', backgroundColor: `${currentPalette.colors.bgPrimary}88` }}
               title={language === 'en' ? 'Switch to French' : 'Passer en Anglais'}
             >
-              <Languages size={20} />
-              <span className="text-sm font-bold">{language.toUpperCase()}</span>
+              <Languages size={15} />
+              <span>{language.toUpperCase()}</span>
             </button>
+
             <a
               href="https://github.com/ManonGras/BigO.dev/tree/main"
               target="_blank"
               rel="noopener noreferrer"
-              className="transition-colors hover:text-white"
+              className="p-2 rounded-lg transition-colors hover:bg-white/5"
               style={{ color: 'var(--text-secondary)' }}
+              title="GitHub"
             >
-              <Github size={20} />
+              <Github size={18} />
             </a>
+
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="p-1 rounded-full overflow-hidden border-2 transition-colors"
+              style={{ borderColor: `${currentPalette.colors.accent}66` }}
+              title={t.common.settings}
+            >
+              <img
+                className="w-6 h-6 rounded-full block"
+                src="https://avatars.githubusercontent.com/u/193535234?v=4"
+                alt="User Avatar"
+              />
+            </button>
           </div>
         </header>
 
@@ -150,65 +200,93 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
 
       {/* Settings Modal */}
       {isSettingsOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div
-            className="w-full max-w-md rounded-2xl shadow-2xl border animate-in zoom-in-95 duration-300 overflow-hidden"
+            className="w-full max-w-sm rounded-2xl shadow-2xl border overflow-hidden"
             style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}
           >
-            <div className="p-6 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
-              <div className="flex items-center gap-3">
-                <Settings className="text-indigo-500" />
-                <h3 className="text-xl font-bold">{t.common.settings}</h3>
+            {/* Modal Header */}
+            <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
+              <div className="flex items-center gap-2.5">
+                <PaletteIcon size={18} style={{ color: 'var(--accent)' }} />
+                <h3 className="text-base font-bold">{t.common.settings}</h3>
               </div>
               <button
                 onClick={() => setIsSettingsOpen(false)}
-                className="hover:rotate-90 transition-transform duration-300"
+                className="p-1.5 rounded-lg hover:bg-black/20 transition-colors"
                 style={{ color: 'var(--text-secondary)' }}
               >
-                <X size={24} />
+                <X size={18} />
               </button>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-5 space-y-4">
+              {/* Language Toggle */}
               <div>
-                <label className="flex items-center gap-2 mb-4 text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
-                  <PaletteIcon size={16} />
-                  Color Palettes
+                <label className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
+                  <Languages size={13} />
+                  {language === 'fr' ? 'Langue' : 'Language'}
                 </label>
-                <div className="grid grid-cols-1 gap-3">
+                <div className="flex gap-2">
+                  {(['fr', 'en'] as const).map(lang => (
+                    <button
+                      key={lang}
+                      onClick={() => setLanguage(lang)}
+                      className="flex-1 py-2.5 rounded-xl text-sm font-bold border-2 transition-all"
+                      style={{
+                        backgroundColor: language === lang ? 'var(--accent)' : 'transparent',
+                        borderColor: language === lang ? 'var(--accent)' : 'var(--border)',
+                        color: language === lang ? '#fff' : 'var(--text-secondary)',
+                      }}
+                    >
+                      {lang === 'fr' ? '🇫🇷 Français' : '🇬🇧 English'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Color Palettes */}
+              <div>
+                <label className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
+                  <PaletteIcon size={13} />
+                  {language === 'fr' ? 'Thème' : 'Theme'}
+                </label>
+                <div className="grid grid-cols-1 gap-2">
                   {PALETTES.map((p) => (
                     <button
                       key={p.id}
                       onClick={() => setPalette(p.id)}
-                      className={`
-                        w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all
-                        ${currentPalette.id === p.id ? 'shadow-lg' : 'hover:scale-[1.02]'}
-                      `}
+                      className="w-full flex items-center justify-between p-3 rounded-xl border-2 transition-all"
                       style={{
-                        backgroundColor: 'var(--bg-primary)',
-                        borderColor: currentPalette.id === p.id ? 'var(--accent)' : 'var(--border)',
+                        backgroundColor: currentPalette.id === p.id ? `${p.colors.accent}15` : 'var(--bg-primary)',
+                        borderColor: currentPalette.id === p.id ? p.colors.accent : 'var(--border)',
                         color: currentPalette.id === p.id ? 'var(--text-primary)' : 'var(--text-secondary)'
                       }}
                     >
-                      <span className="font-medium">{p.name}</span>
-                      <div className="flex gap-1.5">
-                        <div className="w-5 h-5 rounded-full" style={{ backgroundColor: p.colors.bgPrimary }} />
-                        <div className="w-5 h-5 rounded-full" style={{ backgroundColor: p.colors.bgSecondary }} />
-                        <div className="w-5 h-5 rounded-full" style={{ backgroundColor: p.colors.accent }} />
+                      <div className="flex items-center gap-3">
+                        <div className="flex gap-1">
+                          <div className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: p.colors.bgPrimary }} />
+                          <div className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: p.colors.bgSecondary }} />
+                          <div className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: p.colors.accent }} />
+                        </div>
+                        <span className="text-sm font-semibold">{p.name}</span>
                       </div>
+                      {currentPalette.id === p.id && (
+                        <ChevronRight size={14} style={{ color: p.colors.accent }} />
+                      )}
                     </button>
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className="p-6 bg-black/20 flex justify-end">
+            <div className="p-5 border-t" style={{ borderColor: 'var(--border)' }}>
               <button
                 onClick={() => setIsSettingsOpen(false)}
-                className="px-6 py-2 rounded-xl font-bold text-white transition-opacity hover:opacity-90"
+                className="w-full py-2.5 rounded-xl font-bold text-sm text-white transition-opacity hover:opacity-90"
                 style={{ backgroundColor: 'var(--accent)' }}
               >
-                Done
+                {language === 'fr' ? 'Fermer' : 'Close'}
               </button>
             </div>
           </div>

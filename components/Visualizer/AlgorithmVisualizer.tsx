@@ -22,7 +22,10 @@ import {
   generateSinglyLinkedListSteps,
   generateDoublyLinkedListSteps,
   generateSinglyLinkedListSearchSteps,
-  generateSinglyLinkedListDeleteSteps
+  generateSinglyLinkedListDeleteSteps,
+  generateBinaryExponentiationSteps,
+  generateGrahamScanSteps,
+  generateJarvisMarchSteps
 } from '../../utils/algo-generators';
 import { ChevronDown, Edit3, Check, X, TrendingUp, Layout as LayoutIcon, Plus, Minus, RefreshCw, Search, ArrowLeftRight } from 'lucide-react';
 import ComplexityChart from '../Complexity/ComplexityChart';
@@ -204,6 +207,9 @@ const AlgorithmVisualizer: React.FC = () => {
       case 'linked-list-doubly': return generateDoublyLinkedListSteps(data, t);
       case 'linked-list-singly-search': return generateSinglyLinkedListSearchSteps(data, t, targetValue);
       case 'linked-list-singly-delete': return generateSinglyLinkedListDeleteSteps(data, t, targetValue);
+      case 'binary-exponentiation': return generateBinaryExponentiationSteps(data, t, targetValue);
+      case 'graham-scan': return generateGrahamScanSteps(data, t);
+      case 'jarvis-march': return generateJarvisMarchSteps(data, t);
       default: return generateBubbleSortSteps(data, t);
     }
   }, [t, targetValue]);
@@ -287,8 +293,8 @@ const AlgorithmVisualizer: React.FC = () => {
     };
   }, [isPlaying, currentStepIdx, currentStepIdx2, steps.length, steps2.length, speed, isComparisonMode, isPracticeMode]);
 
-  const currentStep = steps[currentStepIdx] || steps[0] || { array: [], comparing: [], swapping: [], sorted: [], stats: { comparisons: 0, swaps: 0 }, currentLine: 0, message: '', tree: undefined, linkedList: undefined };
-  const currentStep2 = steps2[currentStepIdx2] || steps2[0] || { array: [], comparing: [], swapping: [], sorted: [], stats: { comparisons: 0, swaps: 0 }, currentLine: 0, message: '', tree: undefined, linkedList: undefined };
+  const currentStep = (steps[currentStepIdx] || steps[0] || { array: [], comparing: [], swapping: [], sorted: [], currentLine: 0, message: '', stats: { comparisons: 0, swaps: 0 } }) as VizStep;
+  const currentStep2 = (steps2[currentStepIdx2] || steps2[0] || { array: [], comparing: [], swapping: [], sorted: [], currentLine: 0, message: '', stats: { comparisons: 0, swaps: 0 } }) as VizStep;
 
   const handleElementClick = (idx: number) => {
     if (!isPracticeMode || isPlaying) return;
@@ -432,40 +438,34 @@ const AlgorithmVisualizer: React.FC = () => {
           <div className="min-h-[550px] border rounded-3xl p-8 relative flex flex-col shadow-2xl overflow-hidden"
             style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
 
-            {/* Toolbar */}
-            <div className="flex flex-col gap-6 mb-8">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-4" style={{ borderColor: 'var(--border)' }}>
-                {/* Category Selection */}
-                <div className="flex items-center gap-1 p-1 bg-black/20 rounded-xl overflow-x-auto scrollbar-none">
-                  {(['Sorting', 'Searching', 'Trees', 'LinkedLists', 'Comparison'] as const).map(cat => {
-                    const isActive = cat === 'Comparison' ? isComparisonMode : (!isComparisonMode && currentAlgo.category === cat);
+            {/* ── Toolbar ── */}
+            <div className="flex flex-col gap-3 mb-6">
+
+              {/* Row 1: Category + Algorithm selector */}
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Category tabs */}
+                <div className="flex items-center gap-0.5 p-1 rounded-xl overflow-x-auto scrollbar-none" style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}>
+                  {(['Sorting', 'Searching', 'Trees', 'LinkedLists', 'Maths', 'Geometry'] as const).map(cat => {
+                    const isActive = !isComparisonMode && currentAlgo.category === cat;
                     const keyMap: Record<string, keyof typeof t.categories> = {
                       'Sorting': 'sorting',
                       'Searching': 'searching',
                       'Trees': 'trees',
                       'LinkedLists': 'linkedLists',
-                      'Comparison': 'comparison'
+                      'Maths': 'maths',
+                      'Geometry': 'geometry',
                     };
                     return (
                       <button
                         key={cat}
                         onClick={() => {
-                          if (cat === 'Comparison') {
-                            setIsComparisonMode(true);
-                            // Switch to Sorting if in a non-compatible category
-                            if (!['Sorting', 'Searching'].includes(currentAlgo.category)) {
-                              setCurrentAlgoId('bubble-sort');
-                            }
-                          } else {
-                            setIsComparisonMode(false);
-                            const firstAlgo = algorithms.find(a => a.category === cat);
-                            if (firstAlgo) setCurrentAlgoId(firstAlgo.id);
-                          }
+                          setIsComparisonMode(false);
+                          const firstAlgo = algorithms.find(a => a.category === cat);
+                          if (firstAlgo) setCurrentAlgoId(firstAlgo.id);
                         }}
-                        className={`
-                          px-4 py-2 rounded-lg text-[10px] md:text-xs font-bold transition-all whitespace-nowrap
-                          ${isActive ? 'bg-[var(--accent)] text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}
-                        `}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                          isActive ? 'bg-[var(--accent)] text-white shadow-md' : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
+                        }`}
                       >
                         {t.categories[keyMap[cat]]}
                       </button>
@@ -473,119 +473,135 @@ const AlgorithmVisualizer: React.FC = () => {
                   })}
                 </div>
 
-                {/* Algo Pills */}
-                <div className="flex items-center gap-2 overflow-x-auto scrollbar-none max-w-full">
-                  {algorithms.filter(a => a.category === currentAlgo.category).map(algo => (
-                    <button
-                      key={algo.id}
-                      onClick={() => setCurrentAlgoId(algo.id)}
-                      className={`
-                        px-3 py-1.5 rounded-full text-[10px] font-bold whitespace-nowrap border transition-all
-                        ${currentAlgoId === algo.id
-                          ? 'bg-slate-800 border-[var(--accent)] text-[var(--accent)] shadow-sm'
-                          : 'border-transparent text-slate-500 hover:text-slate-300'}
-                      `}
-                    >
-                      {algo.name}
-                    </button>
-                  ))}
-                </div>
+                {/* Separator */}
+                <div className="h-6 w-px hidden sm:block" style={{ backgroundColor: 'var(--border)' }} />
+
+                {/* Algorithm selector (for current category) */}
+                {!isComparisonMode && (
+                  <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+                    {algorithms.filter(a => a.category === currentAlgo.category).map(algo => (
+                      <button
+                        key={algo.id}
+                        onClick={() => setCurrentAlgoId(algo.id)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap border-2 transition-all ${
+                          currentAlgoId === algo.id
+                            ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--accent)]/10'
+                            : 'border-transparent text-slate-500 hover:text-slate-300 hover:border-white/10'
+                        }`}
+                      >
+                        {algo.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Compare mode algo 2 selector */}
+                {isComparisonMode && (
+                  <select
+                    value={secondAlgoId}
+                    onChange={(e) => setSecondAlgoId(e.target.value)}
+                    className="rounded-lg px-3 py-1.5 text-xs font-bold text-slate-300 focus:outline-none focus:border-indigo-500 transition-all"
+                    style={{ backgroundColor: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)' }}
+                  >
+                    {algorithms.filter(a => a.category === currentAlgo.category && a.id !== currentAlgo.id).map(algo => (
+                      <option key={algo.id} value={algo.id}>{algo.name}</option>
+                    ))}
+                  </select>
+                )}
               </div>
 
-              {/* Data & Structure Controls */}
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center p-1 bg-black/20 rounded-xl border border-[var(--border)] overflow-hidden">
-                    <button
-                      onClick={() => setArraySize(Math.max(5, arraySize - 1))}
-                      className="p-2 hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
-                    >
-                      <Minus size={14} />
+              {/* Row 2: Controls */}
+              <div className="flex flex-wrap items-center gap-2 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
+
+                {/* Array size stepper */}
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[9px] font-black uppercase tracking-widest px-1" style={{ color: 'var(--text-secondary)' }}>
+                    {language === 'fr' ? 'Taille' : 'Size'}
+                  </span>
+                  <div className="flex items-center rounded-lg border overflow-hidden" style={{ borderColor: 'var(--border)', backgroundColor: 'rgba(0,0,0,0.2)' }}>
+                    <button onClick={() => setArraySize(Math.max(5, arraySize - 1))} className="px-2.5 py-1.5 hover:bg-white/5 text-slate-400 hover:text-white transition-colors">
+                      <Minus size={12} />
                     </button>
-                    <div className="px-3 border-x border-[var(--border)] text-xs font-bold text-slate-300">
+                    <div className="px-3 border-x text-xs font-bold text-slate-300 min-w-[48px] text-center" style={{ borderColor: 'var(--border)' }}>
                       n = {arraySize}
                     </div>
-                    <button
-                      onClick={() => setArraySize(Math.min(30, arraySize + 1))}
-                      className="p-2 hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
-                    >
-                      <Plus size={14} />
+                    <button onClick={() => setArraySize(Math.min(30, arraySize + 1))} className="px-2.5 py-1.5 hover:bg-white/5 text-slate-400 hover:text-white transition-colors">
+                      <Plus size={12} />
                     </button>
                   </div>
+                </div>
 
-                  {['binary-search', 'linked-list-singly-search', 'linked-list-singly-delete'].includes(currentAlgoId) && (
-                    <div className="flex items-center gap-3 px-4 py-1.5 bg-white/[0.03] backdrop-blur-md rounded-xl border border-white/10 group focus-within:border-indigo-500/50 focus-within:bg-white/[0.06] transition-all duration-300">
-                      <div className="flex items-center gap-2">
-                        <Search size={12} className="text-indigo-400 group-focus-within:scale-110 transition-transform" />
-                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest select-none">Target</span>
-                      </div>
-                      <div className="h-4 w-[1px] bg-white/10" />
+                {/* Target value (search algos only) */}
+                {['binary-search', 'linked-list-singly-search', 'linked-list-singly-delete'].includes(currentAlgoId) && (
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[9px] font-black uppercase tracking-widest px-1" style={{ color: 'var(--text-secondary)' }}>Target</span>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border focus-within:border-indigo-500/60 transition-all" style={{ borderColor: 'var(--border)', backgroundColor: 'rgba(0,0,0,0.2)' }}>
+                      <Search size={11} className="text-indigo-400" />
                       <input
                         type="number"
                         value={targetValue}
                         onChange={(e) => setTargetValue(parseInt(e.target.value) || 0)}
-                        className="w-8 bg-transparent text-xs font-black text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="w-10 bg-transparent text-xs font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {['Sorting', 'Searching'].includes(currentAlgo.category) && (
-                    <button
-                      onClick={() => setIsComparisonMode(!isComparisonMode)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${isComparisonMode ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg' : 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'}`}
-                    >
-                      <ArrowLeftRight size={14} />
-                      {isComparisonMode ? 'Comparison Mode ON' : 'Compare'}
-                    </button>
-                  )}
+                {/* Separator */}
+                <div className="h-8 w-px mx-1" style={{ backgroundColor: 'var(--border)' }} />
 
+                {/* New array */}
+                <button
+                  onClick={() => generateRandomArray(arraySize)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:opacity-90 active:scale-95 shadow-md"
+                  style={{ backgroundColor: 'var(--accent)' }}
+                >
+                  <RefreshCw size={13} /> {t.visualizer.newArray}
+                </button>
+
+                {/* Structure Editor */}
+                <button
+                  onClick={() => setShowEditor(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all hover:bg-white/5"
+                  style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}
+                >
+                  <LayoutIcon size={13} style={{ color: 'var(--accent)' }} />
+                  {language === 'fr' ? 'Éditeur' : 'Editor'}
+                </button>
+
+                {/* Compare toggle */}
+                {['Sorting', 'Searching'].includes(currentAlgo.category) && (
                   <button
-                    onClick={() => generateRandomArray(arraySize)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all shadow-lg hover:scale-[1.02] active:scale-95"
-                    style={{ backgroundColor: 'var(--accent)', boxShadow: `0 8px 15px -3px ${currentPalette.colors.accent}44` }}
+                    onClick={() => setIsComparisonMode(!isComparisonMode)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                      isComparisonMode ? 'bg-indigo-600 border-indigo-500 text-white shadow-md' : 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
                   >
-                    <RefreshCw size={14} /> {t.visualizer.newArray}
+                    <ArrowLeftRight size={13} />
+                    {language === 'fr' ? 'Comparer' : 'Compare'}
                   </button>
-                </div>
+                )}
 
-                <div className="flex items-center gap-3">
-                  {isComparisonMode && (
-                    <select
-                      value={secondAlgoId}
-                      onChange={(e) => setSecondAlgoId(e.target.value)}
-                      className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-xs font-bold text-slate-300 focus:outline-none focus:border-indigo-500 transition-all"
-                    >
-                      {algorithms.filter(a => a.category === currentAlgo.category && a.id !== currentAlgo.id).map(algo => (
-                        <option key={algo.id} value={algo.id}>{algo.name}</option>
-                      ))}
-                    </select>
-                  )}
+                {/* Practice mode */}
+                {currentAlgo.category === 'Sorting' && (
                   <button
-                    onClick={() => setShowEditor(true)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all hover:bg-white/5 text-slate-300 hover:text-white"
-                    style={{ borderColor: 'var(--border)' }}
+                    onClick={() => {
+                      setIsPracticeMode(!isPracticeMode);
+                      setIsPlaying(false);
+                      setCurrentStepIdx(0);
+                      setPracticeFeedback({
+                        message: !isPracticeMode ? t.visualizer.practiceNextStep : '',
+                        type: !isPracticeMode ? 'info' : null
+                      });
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                      isPracticeMode ? 'bg-amber-500 border-amber-400 text-white shadow-md' : 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
                   >
-                    <LayoutIcon size={14} className="text-[var(--accent)]" />
-                    Structure Editor
+                    <Zap size={13} className={isPracticeMode ? 'animate-pulse' : ''} />
+                    {language === 'fr' ? 'Pratique' : 'Practice'}
                   </button>
-                  {currentAlgo.category === 'Sorting' && (
-                    <button
-                      onClick={() => {
-                        setIsPracticeMode(!isPracticeMode);
-                        setIsPlaying(false);
-                        setCurrentStepIdx(0);
-                        setPracticeFeedback({
-                          message: !isPracticeMode ? t.visualizer.practiceNextStep : '',
-                          type: !isPracticeMode ? 'info' : null
-                        });
-                      }}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${isPracticeMode ? 'bg-amber-500 border-amber-400 text-white shadow-lg' : 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'}`}
-                    >
-                      <Zap size={14} className={isPracticeMode ? 'animate-pulse' : ''} />
-                      {isPracticeMode ? 'Practice Mode ON' : 'Practice Mode'}
-                    </button>
-                  )}
-                </div>
+                )}
               </div>
             </div>
 
@@ -610,6 +626,58 @@ const AlgorithmVisualizer: React.FC = () => {
                   </div>
                 ) : currentStep?.linkedList ? (
                   <LinkedListRenderer head={currentStep.linkedList} />
+                ) : currentStep?.points ? (
+                  <div className="w-full h-full min-h-[400px] relative border border-white/5 rounded-2xl bg-black/20 overflow-hidden">
+                    {currentStep.points.map((p, i) => (
+                      <div key={p.id} className="absolute transition-all duration-300 transform -translate-x-1/2 -translate-y-1/2" style={{ left: `${p.x}%`, top: `${p.y}%` }}>
+                        <div className={`w-3 h-3 rounded-full z-10 
+                          ${p.isPivot ? 'bg-indigo-500 scale-[2.5] shadow-[0_0_15px_rgba(99,102,241,0.5)]' : 
+                            p.isChecking ? 'bg-amber-400 scale-150 animate-pulse' : 
+                            p.isHull ? 'bg-emerald-400 scale-125' : 'bg-slate-500'}`} 
+                        />
+                      </div>
+                    ))}
+                    <svg className="absolute w-full h-full pointer-events-none">
+                      {currentStep.hull && currentStep.hull.length > 1 && currentStep.hull.map((p, i) => {
+                        if (i === 0) return null;
+                        const prev = currentStep.hull![i - 1];
+                        return (
+                          <line
+                            key={`hull-line-${i}`}
+                            x1={`${prev.x}%`} y1={`${prev.y}%`}
+                            x2={`${p.x}%`} y2={`${p.y}%`}
+                            stroke="#34d399"
+                            strokeWidth="2"
+                            className="transition-all duration-500"
+                          />
+                        );
+                      })}
+                    </svg>
+                  </div>
+                ) : currentStep?.mathState ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center p-8 gap-6 text-white overflow-y-auto">
+                    <div className="text-4xl font-black text-indigo-400 mb-4 tracking-wider text-center">
+                      <span className="text-slate-300 mr-2 uppercase text-[10px] block opacity-50 tracking-[0.2em] mb-2 font-mono">Calcul</span>
+                      {currentStep.mathState.base}<sup className="text-xl text-slate-300">{currentStep.mathState.exp}</sup> = {currentStep.mathState.result}
+                    </div>
+                    <div className="flex flex-col gap-2 items-center bg-black/40 p-6 rounded-2xl border border-white/10 shadow-2xl min-w-[300px]">
+                      <div className="flex justify-between w-full text-sm mb-2 border-b border-white/10 pb-3">
+                        <span className="text-slate-400 uppercase font-black tracking-widest text-[10px] self-center">Base (b)</span>
+                        <span className="font-mono font-bold text-amber-400 text-lg px-2 rounded bg-amber-400/10">{currentStep.mathState.base}</span>
+                      </div>
+                      <div className="flex justify-between w-full text-sm mb-2 border-b border-white/10 pb-3 h-[48px]">
+                        <span className="text-slate-400 uppercase font-black tracking-widest text-[10px] self-center">Exponent (exp)</span>
+                        <div className="flex flex-col items-end justify-center">
+                          <span className="font-mono font-bold text-pink-400 text-lg leading-tight px-2 rounded bg-pink-400/10">{currentStep.mathState.exp}</span>
+                          <span className="font-mono text-[9px] text-slate-500 mt-1">bin: {currentStep.mathState.binaryExp}</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between w-full text-sm pt-2">
+                        <span className="text-slate-400 uppercase font-black tracking-widest text-[10px] self-center">Result (res)</span>
+                        <span className="font-mono font-black text-emerald-400 text-xl px-2 py-0.5 rounded bg-emerald-400/10">{currentStep.mathState.result}</span>
+                      </div>
+                    </div>
+                  </div>
                 ) : (
                   currentStep?.array.map((value, idx) => {
                     const isComparing = currentStep.comparing.includes(idx);

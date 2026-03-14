@@ -9,6 +9,7 @@ export const en: Translations = {
         complexity: 'Complexity Overview',
         mockExams: 'Mock Exams',
         audit: 'Code Audit',
+        scenarios: 'Array Scenarios',
     },
     common: {
         settings: 'Settings',
@@ -130,7 +131,9 @@ export const en: Translations = {
         dynamicProgramming: 'Dynamic Programming',
         trees: 'Trees',
         linkedLists: 'Linked Lists',
-        comparison: 'Comparison'
+        comparison: 'Comparison',
+        maths: 'Mathematics',
+        geometry: 'Geometry'
     },
     complexity: {
         title: 'Complexity Comparison',
@@ -142,30 +145,6 @@ export const en: Translations = {
         bigTheta: 'Big Theta (Θ) - lower AND upper bound',
         bigOmega: 'Big Omega (Ω) - at least',
         notationsDescription: 'Big O (O) is the upper bound (at most). Big Omega (Ω) is the lower bound (at least). Big Theta (Θ) is the tight bound: it simultaneously minorizes and majorizes f, i.e. c₁·g(n) ≤ f(n) ≤ c₂·g(n) for n large enough.',
-    },
-    mockExams: {
-        title: 'Exam Preparation',
-        exercise: 'Exercise {0}',
-        statement: 'Statement',
-        solution: 'Solution',
-        complexity: 'Complexity',
-        showSolution: 'Show Solution',
-        hideSolution: 'Hide Solution',
-    },
-    courses: {
-        selectCourse: 'Select a Course',
-        sections: 'Sections',
-        backToCourses: 'Back to Courses',
-    },
-    audit: {
-        title: 'Code Audit',
-        description: 'Analyze the code and click on the lines that determine the time complexity.',
-        linesSelected: '{0} line(s) selected',
-        correct: 'Correct!',
-        incorrect: 'Not quite. Check the highlighted lines.',
-        checkAudit: 'Check Selection',
-        nextAudit: 'Next Exercise',
-        resetAudit: 'Reset',
     },
     mockExams: {
         title: 'Exam Preparation',

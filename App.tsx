@@ -10,8 +10,9 @@ import QuizModule from './components/Quiz/QuizModule';
 import ComplexityOverview from './components/Complexity/ComplexityOverview';
 import MockExams from './components/Exams/MockExams';
 import CodeAudit from './components/Audit/CodeAudit';
+import ArrayScenarios from './components/Sheets/ArrayScenarios';
 
-type Tab = 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams' | 'audit';
+type Tab = 'visualizer' | 'sheets' | 'courses' | 'quiz' | 'complexity' | 'mockExams' | 'audit' | 'scenarios';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('visualizer');
@@ -32,6 +33,8 @@ const App: React.FC = () => {
         return <MockExams />;
       case 'audit':
         return <CodeAudit />;
+      case 'scenarios':
+        return <ArrayScenarios />;
 
       default:
         return <AlgorithmVisualizer />;

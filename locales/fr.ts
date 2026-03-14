@@ -9,6 +9,7 @@ export const fr: Translations = {
         complexity: 'Récapitulatif Complexité',
         mockExams: 'Examens Blancs',
         audit: 'Audit de Code',
+        scenarios: 'Scénarios Tableaux',
 
     },
     common: {
@@ -131,7 +132,9 @@ export const fr: Translations = {
         dynamicProgramming: 'Programmation Dynamique',
         trees: 'Arbres',
         linkedLists: 'Listes Chaînées',
-        comparison: 'Comparaison'
+        comparison: 'Comparaison',
+        maths: 'Mathématiques',
+        geometry: 'Géométrie'
     },
     complexity: {
         title: 'Comparatif des Complexités',
@@ -143,30 +146,6 @@ export const fr: Translations = {
         bigTheta: 'Grand Theta (Θ) - minoration ET majoration',
         bigOmega: 'Grand Omega (Ω) - au moins',
         notationsDescription: "Le Grand O (O) est la borne supérieure (au plus). Le Grand Omega (Ω) est la borne inférieure (au moins). Le Grand Theta (Θ) est la borne exacte : il minore ET majore simultanément f, soit c₁·g(n) ≤ f(n) ≤ c₂·g(n) pour n assez grand.",
-    },
-    mockExams: {
-        title: 'Préparation aux Examens',
-        exercise: 'Exercice {0}',
-        statement: 'Énoncé',
-        solution: 'Correction',
-        complexity: 'Complexité',
-        showSolution: 'Afficher la correction',
-        hideSolution: 'Masquer la correction',
-    },
-    courses: {
-        selectCourse: 'Sélectionner un Cours',
-        sections: 'Sections',
-        backToCourses: 'Retour aux Cours',
-    },
-    audit: {
-        title: 'Audit de Code',
-        description: 'Analysez le code et cliquez sur les lignes qui déterminent la complexité temporelle.',
-        linesSelected: '{0} ligne(s) sélectionnée(s)',
-        correct: 'Correct !',
-        incorrect: 'Pas tout à fait. Vérifiez les lignes surlignées.',
-        checkAudit: 'Vérifier la sélection',
-        nextAudit: 'Exercice Suivant',
-        resetAudit: 'Réinitialiser',
     },
     mockExams: {
         title: 'Préparation aux Examens',

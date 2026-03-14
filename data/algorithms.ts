@@ -503,6 +503,158 @@ function insertHead(head, val) {
     if (head) head.prev = newNode;
     return newNode;
   }`
+  },
+  {
+    id: 'binary-exponentiation',
+    name: 'Binary Exponentiation',
+    category: 'Maths',
+    description: 'Also known as exponentiation by squaring, it is a general method for computing large positive integer powers of a number with O(log n) multiplications.',
+    timeComplexity: {
+      best: 'O(log n)',
+      average: 'O(log n)',
+      worst: 'O(log n)'
+    },
+    spaceComplexity: 'O(1)',
+    advantages: [
+      'Extremely fast for large exponents',
+      'Requires very few multiplications',
+      'Easily adapts to modular exponentiation'
+    ],
+    disadvantages: [
+      'Not necessary for very small exponents'
+    ],
+    useCases: [
+      'Cryptography (RSA)',
+      'Modular arithmetic',
+      'Calculating large powers quickly'
+    ],
+    pseudoCode: [
+      'function power(base, exp)',
+      '  result = 1',
+      '  while exp > 0',
+      '    if exp % 2 == 1',
+      '      result = result * base',
+      '    base = base * base',
+      '    exp = floor(exp / 2)',
+      '  return result'
+    ],
+    implementation: `function binaryExponentiation(base, exp) {
+  let result = 1;
+  while (exp > 0) {
+    if (exp % 2 === 1) {
+      result *= base;
+    }
+    base *= base;
+    exp = Math.floor(exp / 2);
+  }
+  return result;
+}`
+  },
+  {
+    id: 'graham-scan',
+    name: 'Graham Scan (Convex Hull)',
+    category: 'Geometry',
+    description: 'An algorithm for finding the convex hull of a finite set of points in the plane with time complexity O(n log n).',
+    timeComplexity: {
+      best: 'O(n log n)',
+      average: 'O(n log n)',
+      worst: 'O(n log n)'
+    },
+    spaceComplexity: 'O(n)',
+    advantages: [
+      'Optimal time complexity for general point sets',
+      'Relies on simple cross product tests'
+    ],
+    disadvantages: [
+      'Requires prior sorting of points',
+      'Precision issues with floating-point arithmetic'
+    ],
+    useCases: [
+      'Collision avoidance and detection',
+      'Image processing (object tracking)',
+      'Geographical Information Systems (GIS)'
+    ],
+    pseudoCode: [
+      'let p0 be the point with lowest y (and lowest x)',
+      'sort remaining points by polar angle with p0',
+      'stack.push(p0)',
+      'stack.push(p1)',
+      'stack.push(p2)',
+      'for i from 3 to n-1',
+      '  while orientation(next-to-top, top, p[i]) != COUNTERCLOCKWISE',
+      '    stack.pop()',
+      '  stack.push(p[i])',
+      'return stack'
+    ],
+    implementation: `function grahamScan(points) {
+  let p0 = points.reduce((min, p) => p.y < min.y || (p.y === min.y && p.x < min.x) ? p : min, points[0]);
+  points.sort((a, b) => polarAngle(p0, a) - polarAngle(p0, b));
+  
+  let stack = [points[0], points[1], points[2]];
+  for (let i = 3; i < points.length; i++) {
+    while (stack.length > 1 && ccw(stack[stack.length - 2], stack[stack.length - 1], points[i]) <= 0) {
+      stack.pop();
+    }
+    stack.push(points[i]);
+  }
+  return stack;
+}`
+  },
+  {
+    id: 'jarvis-march',
+    name: 'Jarvis March (Gift Wrapping)',
+    category: 'Geometry',
+    description: 'An algorithm for computing the convex hull of a given set of points. It builds the hull one point at a time, like wrapping a gift.',
+    timeComplexity: {
+      best: 'O(n h)',
+      average: 'O(n h)',
+      worst: 'O(n²)'
+    },
+    spaceComplexity: 'O(h)',
+    advantages: [
+      'Simple to understand intuitively',
+      'Very efficient if the hull has few points (output-sensitive)'
+    ],
+    disadvantages: [
+      'Worst-case runtime is O(n²) when all points are on the hull'
+    ],
+    useCases: [
+      'Geographical algorithms',
+      'Image processing contour plotting'
+    ],
+    pseudoCode: [
+      'let p0 be the leftmost point',
+      'hull = []',
+      'p = p0',
+      'repeat:',
+      '  hull.add(p)',
+      '  q = (p + 1) % n',
+      '  for i from 0 to n - 1:',
+      '    if orientation(p, i, q) == COUNTERCLOCKWISE:',
+      '      q = i',
+      '  p = q',
+      'until p == p0',
+      'return hull'
+    ],
+    implementation: `function jarvisMarch(points) {
+  if (points.length < 3) return points;
+  let hull = [];
+  let p0 = points.reduce((min, p) => p.x < min.x ? p : min, points[0]);
+  let p = p0, q;
+
+  do {
+    hull.push(p);
+    q = points[0];
+    for (let i = 1; i < points.length; i++) {
+      if (q === p || ccw(p, points[i], q) > 0) {
+        q = points[i];
+      }
+    }
+    p = q;
+  } while (p !== p0);
+
+  return hull;
+}`
   }
 ];
 
@@ -1012,9 +1164,9 @@ function insertHead(head, val) {
   },
   {
     id: 'linked-list-singly-search',
-    name: 'LL Singly: Search',
+    name: 'LL Simple : Recherche',
     category: 'LinkedLists',
-    description: 'Searching for a specific element in a Singly Linked List involved traversing from the head node until the element is found or the end of the list is reached.',
+    description: "Rechercher un élément spécifique dans une liste chaînée simple implique de parcourir la liste depuis la tête jusqu'à ce que l'élément soit trouvé ou que la fin de la liste soit atteinte.",
     timeComplexity: {
       best: 'O(1)', // Head
       average: 'O(n)',
@@ -1022,16 +1174,16 @@ function insertHead(head, val) {
     },
     spaceComplexity: 'O(1)',
     advantages: [
-      'Simple implementation',
-      'No extra memory beyond pointers'
+      'Implémentation simple',
+      'Pas de mémoire supplémentaire au-delà des pointeurs'
     ],
     disadvantages: [
-      'Linear time complexity',
-      'No random access'
+      'Complexité temporelle linéaire',
+      'Pas d\'accès aléatoire'
     ],
     useCases: [
-      'Finding an item in a list',
-      'Membership check'
+      'Trouver un élément dans une liste',
+      'Vérification d\'appartenance'
     ],
     pseudoCode: [
       'search(head, key)',
@@ -1052,9 +1204,9 @@ function insertHead(head, val) {
   },
   {
     id: 'linked-list-singly-delete',
-    name: 'LL Singly: Delete',
+    name: 'LL Simple : Suppression',
     category: 'LinkedLists',
-    description: 'Deleting a node from a Singly Linked List. Requires finding the previous node to update its next pointer.',
+    description: "Supprimer un nœud d'une liste chaînée simple. Nécessite de trouver le nœud précédent pour mettre à jour son pointeur suivant.",
     timeComplexity: {
       best: 'O(1)', // Head
       average: 'O(n)',
@@ -1062,14 +1214,14 @@ function insertHead(head, val) {
     },
     spaceComplexity: 'O(1)',
     advantages: [
-      'Dynamic size',
-      'Efficient if node and prev are known'
+      'Taille dynamique',
+      'Efficace si le nœud et le précédent sont connus'
     ],
     disadvantages: [
-      'Requires traversal to find prev node (O(n))'
+      'Nécessite un parcours pour trouver le nœud précédent (O(n))'
     ],
     useCases: [
-      'Removing items from a collection'
+      'Suppression d\'éléments d\'une collection'
     ],
     pseudoCode: [
       'delete(head, key)',
@@ -1096,5 +1248,157 @@ function insertHead(head, val) {
     if (curr) prev.next = curr.next;
     return head;
   }`
+  },
+  {
+    id: 'binary-exponentiation',
+    name: 'Exponentiation Binaire',
+    category: 'Maths',
+    description: "Également appelée exponentiation rapide, il s'agit d'une méthode pour calculer rapidement les grandes puissances entières d'un nombre avec O(log n) multiplications.",
+    timeComplexity: {
+      best: 'O(log n)',
+      average: 'O(log n)',
+      worst: 'O(log n)'
+    },
+    spaceComplexity: 'O(1)',
+    advantages: [
+      'Extrêmement rapide pour les grands exposants',
+      'Le nombre de multiplications est très réduit',
+      'S\'adapte très bien pour l\'exponentiation modulaire'
+    ],
+    disadvantages: [
+      'Surcoût inutile pour les très petites puissances'
+    ],
+    useCases: [
+      'Cryptographie (RSA)',
+      'Arithmétique modulaire',
+      'Calculs géométriques et probabilistes'
+    ],
+    pseudoCode: [
+      'fonction puissance(base, exp)',
+      '  resultat = 1',
+      '  tant que exp > 0',
+      '    si exp % 2 == 1',
+      '      resultat = resultat * base',
+      '    base = base * base',
+      '    exp = plancher(exp / 2)',
+      '  retourner resultat'
+    ],
+    implementation: `function binaryExponentiation(base, exp) {
+  let result = 1;
+  while (exp > 0) {
+    if (exp % 2 === 1) {
+      result *= base;
+    }
+    base *= base;
+    exp = Math.floor(exp / 2);
+  }
+  return result;
+}`
+  },
+  {
+    id: 'graham-scan',
+    name: 'Marche de Graham (Enveloppe convexe)',
+    category: 'Geometry',
+    description: "Un algorithme pour déterminer l'enveloppe convexe d'un nuage de points dans un plan en O(n log n).",
+    timeComplexity: {
+      best: 'O(n log n)',
+      average: 'O(n log n)',
+      worst: 'O(n log n)'
+    },
+    spaceComplexity: 'O(n)',
+    advantages: [
+      'Complexité en temps optimale',
+      'Calculs basés sur des produits vectoriels simples (sans trigonométrie coûteuse)'
+    ],
+    disadvantages: [
+      'Nécessite un tri initial coûteux',
+      'Potentiels soucis de précision avec les nombres flottants si l\'implémentation n\'est pas rigoureuse'
+    ],
+    useCases: [
+      'Calculs de géométrie computationnelle',
+      'Traitement d\'images (Reconnaissance de formes)',
+      'Systèmes de détection de collision'
+    ],
+    pseudoCode: [
+      'soit p0 le point avec le y le plus bas (et le plus à gauche)',
+      'trier le reste des points selon l\'angle polaire par rapport à p0',
+      'stack.push(p0)',
+      'stack.push(p1)',
+      'stack.push(p2)',
+      'pour i allant de 3 à n-1',
+      '  tant que le virage (avant-dernier, dernier, p[i]) n\'est PAS GAUCHE',
+      '    stack.pop()',
+      '  stack.push(p[i])',
+      'retourner stack'
+    ],
+    implementation: `function grahamScan(points) {
+  let p0 = points.reduce((min, p) => p.y < min.y || (p.y === min.y && p.x < min.x) ? p : min, points[0]);
+  points.sort((a, b) => polarAngle(p0, a) - polarAngle(p0, b));
+  
+  let stack = [points[0], points[1], points[2]];
+  for (let i = 3; i < points.length; i++) {
+    while (stack.length > 1 && ccw(stack[stack.length - 2], stack[stack.length - 1], points[i]) <= 0) {
+      stack.pop();
+    }
+    stack.push(points[i]);
+  }
+  return stack;
+}`
+  },
+  {
+    id: 'jarvis-march',
+    name: 'Marche de Jarvis (Papier Cadeau)',
+    category: 'Geometry',
+    description: "Algorithme pour obtenir l'enveloppe convexe en enveloppant littéralement le nuage de points l'un après l'autre.",
+    timeComplexity: {
+      best: 'O(n h)',
+      average: 'O(n h)',
+      worst: 'O(n²)'
+    },
+    spaceComplexity: 'O(h)',
+    advantages: [
+      'Très intuitif (fonctionne comme du papier cadeau)',
+      'Extrêmement rapide (O(n h)) si l\'enveloppe contient très peu de points'
+    ],
+    disadvantages: [
+      'Pire cas en O(n²) si tous les points appartiennent à l\'enveloppe'
+    ],
+    useCases: [
+      'Cartographie en géographie',
+      'Extraction de contours dans le traitement de l\'image'
+    ],
+    pseudoCode: [
+      'soit p0 le point le plus à gauche',
+      'enveloppe = []',
+      'p = p0',
+      'repeter:',
+      '  enveloppe.ajouter(p)',
+      '  q = (p + 1) % n',
+      '  pour i de 0 à n - 1:',
+      '    si orientation(p, i, q) == ANTI-HORAIRE:',
+      '      q = i',
+      '  p = q',
+      'jusqu\'à p == p0',
+      'retourner enveloppe'
+    ],
+    implementation: `function jarvisMarch(points) {
+  if (points.length < 3) return points;
+  let hull = [];
+  let p0 = points.reduce((min, p) => p.x < min.x ? p : min, points[0]);
+  let p = p0, q;
+
+  do {
+    hull.push(p);
+    q = points[0];
+    for (let i = 1; i < points.length; i++) {
+      if (q === p || ccw(p, points[i], q) > 0) {
+        q = points[i];
+      }
+    }
+    p = q;
+  } while (p !== p0);
+
+  return hull;
+}`
   }
 ];
