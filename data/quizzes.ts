@@ -104,7 +104,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which notation represents the tight bound of an algorithm\'s growth?',
     options: ['Big O (O)', 'Big Omega (Ω)', 'Big Theta (Θ)', 'Big Delta (Δ)'],
     correctAnswer: 2,
-    explanation: 'Big Theta (Θ) represents the tight bound, used when the best and worst cases have the same growth rate.'
+    explanation: 'Big Theta (Θ) is the tight bound: it simultaneously provides a lower bound (like Ω) and an upper bound (like O), i.e. ∃c₁,c₂>0, ∃n₀, ∀n≥n₀, c₁·g(n) ≤ f(n) ≤ c₂·g(n). It characterizes the exact asymptotic order of f, and applies when best and worst cases share the same growth rate.'
   }
 ];
 
@@ -211,6 +211,6 @@ export const QUIZ_QUESTIONS_FR: QuizQuestion[] = [
     question: 'Quelle notation représente la borne exacte (tight bound) de la croissance d\'un algorithme ?',
     options: ['Grand O (O)', 'Grand Omega (Ω)', 'Grand Theta (Θ)', 'Grand Delta (Δ)'],
     correctAnswer: 2,
-    explanation: 'Le Grand Theta (Θ) représente la borne exacte, utilisée lorsque le meilleur et le pire cas ont le même taux de croissance.'
+    explanation: 'Le Grand Theta (Θ) est la borne exacte : il minore ET majore simultanément f, soit ∃c₁,c₂>0, ∃n₀, ∀n≥n₀, c₁·g(n) ≤ f(n) ≤ c₂·g(n). Il caractérise l\'ordre asymptotique exact de f, et s\'applique quand le meilleur et le pire cas partagent le même taux de croissance.'
   }
 ];

@@ -139,9 +139,9 @@ export const en: Translations = {
         algorithm: 'Algorithm',
         notationsTitle: 'Complexity Notations',
         bigO: 'Big O (O) - at most',
-        bigTheta: 'Big Theta (Θ) - exactly',
+        bigTheta: 'Big Theta (Θ) - lower AND upper bound',
         bigOmega: 'Big Omega (Ω) - at least',
-        notationsDescription: 'Big O represents the upper bound (at most), Big Omega the lower bound (at least), and Big Theta the tight/exact bound (exactly).',
+        notationsDescription: 'Big O (O) is the upper bound (at most). Big Omega (Ω) is the lower bound (at least). Big Theta (Θ) is the tight bound: it simultaneously minorizes and majorizes f, i.e. c₁·g(n) ≤ f(n) ≤ c₂·g(n) for n large enough.',
     },
     mockExams: {
         title: 'Exam Preparation',
