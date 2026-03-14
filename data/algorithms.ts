@@ -1164,9 +1164,9 @@ function insertHead(head, val) {
   },
   {
     id: 'linked-list-singly-search',
-    name: 'LL Singly: Search',
+    name: 'LL Simple : Recherche',
     category: 'LinkedLists',
-    description: 'Searching for a specific element in a Singly Linked List involved traversing from the head node until the element is found or the end of the list is reached.',
+    description: "Rechercher un élément spécifique dans une liste chaînée simple implique de parcourir la liste depuis la tête jusqu'à ce que l'élément soit trouvé ou que la fin de la liste soit atteinte.",
     timeComplexity: {
       best: 'O(1)', // Head
       average: 'O(n)',
@@ -1174,16 +1174,16 @@ function insertHead(head, val) {
     },
     spaceComplexity: 'O(1)',
     advantages: [
-      'Simple implementation',
-      'No extra memory beyond pointers'
+      'Implémentation simple',
+      'Pas de mémoire supplémentaire au-delà des pointeurs'
     ],
     disadvantages: [
-      'Linear time complexity',
-      'No random access'
+      'Complexité temporelle linéaire',
+      'Pas d\'accès aléatoire'
     ],
     useCases: [
-      'Finding an item in a list',
-      'Membership check'
+      'Trouver un élément dans une liste',
+      'Vérification d\'appartenance'
     ],
     pseudoCode: [
       'search(head, key)',
@@ -1204,9 +1204,9 @@ function insertHead(head, val) {
   },
   {
     id: 'linked-list-singly-delete',
-    name: 'LL Singly: Delete',
+    name: 'LL Simple : Suppression',
     category: 'LinkedLists',
-    description: 'Deleting a node from a Singly Linked List. Requires finding the previous node to update its next pointer.',
+    description: "Supprimer un nœud d'une liste chaînée simple. Nécessite de trouver le nœud précédent pour mettre à jour son pointeur suivant.",
     timeComplexity: {
       best: 'O(1)', // Head
       average: 'O(n)',
@@ -1214,14 +1214,14 @@ function insertHead(head, val) {
     },
     spaceComplexity: 'O(1)',
     advantages: [
-      'Dynamic size',
-      'Efficient if node and prev are known'
+      'Taille dynamique',
+      'Efficace si le nœud et le précédent sont connus'
     ],
     disadvantages: [
-      'Requires traversal to find prev node (O(n))'
+      'Nécessite un parcours pour trouver le nœud précédent (O(n))'
     ],
     useCases: [
-      'Removing items from a collection'
+      'Suppression d\'éléments d\'une collection'
     ],
     pseudoCode: [
       'delete(head, key)',
