@@ -44,8 +44,8 @@ const ComplexityOverview: React.FC = () => {
                     </p>
                     <div className="bg-amber-500/5 border border-amber-500/10 p-4 rounded-xl mb-8 text-xs italic" style={{ color: 'var(--text-secondary)' }}>
                         <strong>Note:</strong> {language === 'fr'
-                            ? "Une complexité est dite 'Exacte' (Θ) quand l'algorithme effectue toujours le même nombre d'opérations pour une taille n donnée, peu importe la disposition des données (ex: Tri Fusion, Tri par Sélection)."
-                            : "A complexity is called 'Exact' (Θ) when the algorithm always performs the same number of operations for a given size n, regardless of data distribution (e.g., Merge Sort, Selection Sort)."}
+                            ? "Θ (Theta) est une borne exacte : elle minore ET majore simultanément f, c'est-à-dire ∃c₁,c₂>0, ∃n₀, ∀n≥n₀, c₁·g(n) ≤ f(n) ≤ c₂·g(n). On l'utilise quand le meilleur et le pire cas ont la même complexité asymptotique (ex: Tri Fusion, Tri par Sélection)."
+                            : "Θ (Theta) is a tight bound: it simultaneously minorizes AND majorizes f, i.e. ∃c₁,c₂>0, ∃n₀, ∀n≥n₀, c₁·g(n) ≤ f(n) ≤ c₂·g(n). It is used when the best and worst cases share the same asymptotic complexity (e.g., Merge Sort, Selection Sort)."}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[

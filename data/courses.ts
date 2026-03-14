@@ -324,11 +324,12 @@ export const COURSES: Course[] = [
                         ],
                     },
                     {
-                        title: 'Big Theta (Exact Order)',
+                        title: 'Big Theta (Tight Bound: Lower AND Upper)',
                         content: [
                             'f ∈ Θ(g): f ∈ O(g) and f ∈ Ω(g)',
-                            'Both functions grow at the same rate.',
-                            'Visually, if f ∈ Θ(n), its curve will be, for n ≥ n₀, trapped between two lines c₁n and c₂n. A complexity in Θ(n²) will follow parabolic growth, regardless of constants.',
+                            'Formally: ∃c₁ > 0, ∃c₂ > 0, ∃n₀, ∀n ≥ n₀, c₁·g(n) ≤ f(n) ≤ c₂·g(n)',
+                            'Θ simultaneously provides a lower bound (like Ω) and an upper bound (like O): it both minorizes and majorizes f. It characterizes the exact order of growth.',
+                            'Visually, if f ∈ Θ(n), its curve will be, for n ≥ n₀, sandwiched between two lines c₁·n and c₂·n. A complexity of Θ(n²) exhibits parabolic growth regardless of constants.',
                         ],
                     },
                     {
@@ -752,11 +753,12 @@ export const COURSES_FR: Course[] = [
                         ],
                     },
                     {
-                        title: 'Grand Theta (Ordre exact)',
+                        title: 'Grand Theta (Borne exacte : minoration ET majoration)',
                         content: [
                             'f ∈ Θ(g) : f ∈ O(g) et f ∈ Ω(g)',
-                            'Les deux fonctions croissent à la même vitesse.',
-                            'Visuellement, si f ∈ Θ(n), sa courbe sera, pour n ≥ n₀, emprisonnée entre deux droites c₁n et c₂n. Une complexité en Θ(n²) suivra une croissance parabolique, quelles que soient les constantes.',
+                            'Formellement : ∃c₁ > 0, ∃c₂ > 0, ∃n₀, ∀n ≥ n₀, c₁·g(n) ≤ f(n) ≤ c₂·g(n)',
+                            'Θ fournit simultanément une minoration (comme Ω) et une majoration (comme O) : il encadre f entre deux multiples constants de g. C\'est une borne exacte qui caractérise l\'ordre de grandeur précis de f.',
+                            'Visuellement, si f ∈ Θ(n), sa courbe sera, pour n ≥ n₀, emprisonnée entre deux droites c₁·n et c₂·n. Une complexité en Θ(n²) suivra une croissance parabolique, quelles que soient les constantes.',
                         ],
                     },
                     {

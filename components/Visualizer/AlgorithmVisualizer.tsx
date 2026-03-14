@@ -356,6 +356,72 @@ const AlgorithmVisualizer: React.FC = () => {
     }, 3000);
   };
 
+  const handleElementClick = (idx: number) => {
+    if (!isPracticeMode || isPlaying) return;
+
+    const newSelection = [...selectedIndices];
+    if (newSelection.includes(idx)) {
+      setSelectedIndices(newSelection.filter(i => i !== idx));
+      return;
+    }
+
+    newSelection.push(idx);
+    setSelectedIndices(newSelection);
+
+    if (newSelection.length === 2) {
+      verifyPracticeStep(newSelection);
+    }
+  };
+
+  const verifyPracticeStep = (indices: number[]) => {
+    if (currentStepIdx >= steps.length - 1) return;
+
+    // Find the next significant step (either comparing or swapping)
+    let nextStepIdx = currentStepIdx + 1;
+    while (nextStepIdx < steps.length - 1 &&
+      steps[nextStepIdx].comparing.length === 0 &&
+      steps[nextStepIdx].swapping.length === 0) {
+      nextStepIdx++;
+    }
+
+    const nextStep = steps[nextStepIdx];
+    const expectedIndices = nextStep.swapping.length > 0 ? nextStep.swapping : nextStep.comparing;
+
+    const isCorrect = indices.every(i => expectedIndices.includes(i)) &&
+      expectedIndices.every(i => indices.includes(i));
+
+    if (isCorrect) {
+      setCurrentStepIdx(nextStepIdx);
+      setPracticeFeedback({ message: t.visualizer.practiceSuccess, type: 'success' });
+      setSelectedIndices([]);
+
+      if (nextStepIdx >= steps.length - 1) {
+        setPracticeFeedback({ message: t.visualizer.practiceCompleted, type: 'success' });
+      }
+    } else {
+      let errorMsg = t.visualizer.practiceError;
+      if (currentAlgoId === 'bubble-sort') {
+        const isAdjacent = Math.abs(indices[0] - indices[1]) === 1;
+        if (!isAdjacent) errorMsg = t.visualizer.bubbleSortError;
+        else errorMsg = t.visualizer.genericError;
+      } else if (currentAlgoId === 'selection-sort') {
+        errorMsg = t.visualizer.selectionSortError;
+      } else if (currentAlgoId === 'insertion-sort') {
+        errorMsg = t.visualizer.insertionSortError;
+      } else {
+        errorMsg = t.visualizer.genericError;
+      }
+
+      setPracticeFeedback({ message: errorMsg, type: 'error' });
+      setSelectedIndices([]);
+    }
+
+    // Auto-clear feedback after 3 seconds
+    setTimeout(() => {
+      setPracticeFeedback(prev => ({ ...prev, type: prev.type === 'info' ? 'info' : null }));
+    }, 3000);
+  };
+
   return (
     <div className="flex flex-col gap-8">
       {/* Top Section: Visualization & Code Sidebar */}

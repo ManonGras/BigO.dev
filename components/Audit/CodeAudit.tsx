@@ -56,7 +56,7 @@ const CodeAudit: React.FC = () => {
         setCurrentExerciseIndex((prev) => (prev + 1) % auditExercises.length);
     };
 
-    const codeStyle = currentPalette.name === 'Latte' ? oneLight : atomDark;
+    const codeStyle = currentPalette.id === 'latte' ? oneLight : atomDark;
 
     return (
         <div className="flex flex-col h-full max-w-6xl mx-auto gap-6 pb-6">
